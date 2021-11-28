@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Patch>
+    <!--
+    <Operation Class="XmlExtensions.UseSetting">
+        <modId>carnap2.EMR</modId>
+        <key>EMR_CFOutlander</key>
+        <defaultValue>true</defaultValue>
+        <apply>
+            <Operation Class="XmlExtensions.PatchOperationAdd">
+                <xpath>EMRRaces/AlienRace.ThingDef_AlienRace[defName="zzEMR_{defName}_Race"]</xpath>
+                <value>
+                    
+                </value>
+            </Operation>
+        </apply>
+    </Operation>
+    -->
+</Patch>

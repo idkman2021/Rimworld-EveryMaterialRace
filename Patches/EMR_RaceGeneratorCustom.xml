@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- base patch to create a race from each material with default settings. -->
+<Patch>
+    
+    <!-- For each material... -->
+    <Operation Class="XmlExtensions.ForEach">
+        <xpath>Defs/ThingDef[(defName) and (stuffProps)]</xpath>
+        <storeIn>DEF</storeIn>
+        <apply>
+            <!--
+            <Operation Class="XmlExtensions.Log">
+                <text>{DEF}</text>
+            </Operation>
+            -->
+            <!-- I create an optional patch which is true by default unless the material is leather. -->
+            <Operation Class="XmlExtensions.ConditionalInherited">
+                <xpathDef>{DEF}</xpathDef>
+                <xpathLocal>stuffProps/categories[(li="Fabric") or (li="Leathery")]</xpathLocal>
+                <caseTrue>
+                    <!--
+                    <Operation Class="XmlExtensions.Log">
+                        <text>{DEF} is a leather</text>
+                    </Operation>
+                    -->
+                    <Operation Class="XmlExtensions.OptionalPatch">
+                        <modId>carnap2.EMR</modId>
+                        <key>EMR_{DEF}_Enable</key>
+                        <defaultValue>false</defaultValue>
+                        <caseTrue>
+                            <Operation Class="XmlExtensions.ApplyPatch">
+                                <patchName>EMR_RaceGenDef</patchName>
+                                <arguments>
+                                    <li>{DEF}</li>
+                                </arguments>
+                            </Operation>
+                        </caseTrue>
+                        <caseFalse>
+                            
+                        </caseFalse>
+                    </Operation>
+                    
+                </caseTrue>
+                <caseFalse>
+                    <!--
+                    <Operation Class="XmlExtensions.Log">
+                        <text>{DEF} is not leather</text>
+                    </Operation>
+                    -->
+                    <Operation Class="XmlExtensions.OptionalPatch">
+                        <modId>carnap2.EMR</modId>
+                        <key>EMR_{DEF}_Enable</key>
+                        <defaultValue>true</defaultValue>
+                        <caseTrue>
+                            <Operation Class="XmlExtensions.ApplyPatch">
+                                <patchName>EMR_RaceGenDef</patchName>
+                                <arguments>
+                                    <li>{DEF}</li>
+                                </arguments>
+                            </Operation>
+                        </caseTrue>
+                        <caseFalse>
+                            
+                        </caseFalse>
+                    </Operation>
+                </caseFalse>
+            </Operation>
+            
+            <!-- add mod settings -->
+            <Operation Class="XmlExtensions.FindNodeInherited">
+                <xpathDef>{DEF}</xpathDef>
+                <xpathLocal>stuffProps/categories/li[1]</xpathLocal>
+                <storeIn>category</storeIn>
+                <defaultValue>none</defaultValue>
+                <apply>
+                    
+                    <Operation Class="PatchOperationAdd"><success>Always</success>
+                        <xpath>Defs/XmlExtensions.SettingsMenuDef[defName="EVR_Settings"]/settings/li/tabs/li[label="Race toggles"]/settings[not(li/tag="{category}")]</xpath>
+                        <value>
+                            <li Class="XmlExtensions.Setting.Section"><tag>{category}</tag>
+                                <settings>
+                                    <li Class="XmlExtensions.Setting.Text">
+                                        <font>Medium</font>
+                                        <text>{category}</text>
+                                    </li>
+                                    
+                                </settings>
+                            </li>
+                            <li Class="XmlExtensions.Setting.Gap">
+                                <spacing>12</spacing>
+                            </li>
+                        </value>
+                    </Operation>
+                    
+                    <!-- create a toggle for the race -->
+                    <Operation Class="XmlExtensions.FindNodeInherited">
+                        <xpathDef>{DEF}</xpathDef>
+                        <xpathLocal>label</xpathLocal>
+                        <storeIn>SettingLabel</storeIn>
+                        <apply>
+                            <Operation Class="PatchOperationAdd">
+                                <xpath>Defs/XmlExtensions.SettingsMenuDef[defName="EVR_Settings"]/settings/li/tabs/li[label="Race toggles"]/settings/li[tag="{category}"]/settings</xpath>
+                                <value>
+                                    <li Class="XmlExtensions.Setting.Checkbox">
+                                        <key>EMR_{DEF}_Enable</key>
+                                        <label>{SettingLabel} race</label>
+                                        <tooltip>{DEF}</tooltip>
+                                    </li>
+                                </value>
+                            </Operation>
+                        </apply>
+                    </Operation>
+                </apply>
+            </Operation>
+            
+            <!-- add settings to reset settings button -->
+            <Operation Class="PatchOperationAdd">
+                <xpath>Defs/XmlExtensions.SettingsMenuDef[defName="EVR_Settings"]/settings/li/tabs/li[label="Race toggles"]/settings/li[@Class="XmlExtensions.Setting.ResetSettings"]/keys</xpath>
+                <value>
+                    <li>EMR_{DEF}_Enable</li>
+                </value>
+            </Operation>
+            
+        </apply>
+    </Operation>
+</Patch>

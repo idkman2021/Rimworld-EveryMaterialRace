@@ -1,0 +1,450 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- base patch to create a race from each building with default settings. -->
+<Patch>
+    <Operation Class="XmlExtensions.OptionalPatch">
+        <modId>carnap2.EMR</modId>
+        <key>EMR_BuildingRaces</key>
+        <defaultValue>false</defaultValue>
+        <caseTrue>
+            
+            <!-- For each building... -->
+            <Operation Class="XmlExtensions.ForEach">
+                <xpath>Defs/ThingDef[defName]</xpath>
+                <storeIn>DEF</storeIn>
+                <apply>
+                    <Operation Class="XmlExtensions.ConditionalInherited">
+                        <xpathDef>{DEF}</xpathDef>
+                        <xpathLocal>building</xpathLocal>
+                        <caseTrue> 
+                            <!-- ...I create a bunch of variables from buildings's statBases, statOffsets and statFactors. The variables are immediately processed into race variables. -->
+                            <Operation Class="XmlExtensions.AggregateValues">
+                                <valueOperations>
+                                    
+                                    <Operation Class="XmlExtensions.FindNodeInherited">
+                                        <xpathDef>{DEF}</xpathDef>
+                                        <xpathLocal>label</xpathLocal>
+                                        <storeIn>label</storeIn>
+                                        <defaultValue>abyss</defaultValue>
+                                    </Operation>
+                                    
+                                    <Operation Class="XmlExtensions.CreateVariable">
+                                        <storeIn>defName</storeIn>
+                                        <value>{DEF}/defName</value>
+                                        <fromXml>true</fromXml>
+                                    </Operation>
+                                    
+                                    <Operation Class="XmlExtensions.FindNodeInherited">
+                                        <xpathDef>{DEF}</xpathDef>
+                                        <xpathLocal>statBases/MarketValue</xpathLocal>
+                                        <defaultValue>1750</defaultValue>
+                                        <storeIn>MarketValue</storeIn>
+                                    </Operation>
+                                    
+                                    <!-- Mass = x*200 -->
+                                    <Operation Class="XmlExtensions.FindNodeInherited">
+                                        <xpathDef>{DEF}</xpathDef>
+                                        <xpathLocal>statBases/Mass</xpathLocal>
+                                        <storeIn>Mass</storeIn>
+                                        <defaultValue>60</defaultValue>
+                                    </Operation>
+                                    <Operation Class="XmlExtensions.CreateVariable">
+                                        <storeIn>MassA</storeIn>
+                                        <value>{Mass}</value>
+                                        <value2>1.4</value2>
+                                        <operation>*</operation>
+                                    </Operation>
+                                    <Operation Class="XmlExtensions.CreateVariable">
+                                        <storeIn>MassB</storeIn>
+                                        <value>1</value>
+                                        <value2>1.4</value2>
+                                        <operation>/</operation>
+                                    </Operation>
+                                    <Operation Class="XmlExtensions.CreateVariable">
+                                        <storeIn>MassC</storeIn>
+                                        <value>{MassA}</value>
+                                        <value2>{MassB}</value2>
+                                        <operation>^</operation>
+                                    </Operation>
+                                    <Operation Class="XmlExtensions.CreateVariable">
+                                        <storeIn>BodyScaleA</storeIn>
+                                        <value>{MassC}</value>
+                                        <value2>5</value2>
+                                        <operation>/</operation>
+                                    </Operation>
+                                    <Operation Class="XmlExtensions.CreateVariable">
+                                        <storeIn>BodyScale</storeIn>
+                                        <value>{BodyScaleA}</value>
+                                        <value2>0.05</value2>
+                                        <operation>max</operation>
+                                    </Operation>
+                                    
+                                    <!-- Health scale = MaxHitPoints^0.5-->
+                                    <Operation Class="XmlExtensions.FindNodeInherited">
+                                        <xpathDef>{DEF}</xpathDef>
+                                        <xpathLocal>statBases/MaxHitPoints</xpathLocal>
+                                        <storeIn>MaxHitPoints</storeIn>
+                                        <defaultValue>1</defaultValue>
+                                    </Operation>
+                                    <Operation Class="XmlExtensions.CreateVariable">
+                                        <storeIn>baseHealthScale</storeIn>
+                                        <value>{MaxHitPoints}</value>
+                                        <value2>100</value2>
+                                        <operation>/</operation>
+                                    </Operation>
+                                    
+                                    <!-- SocialImpact = (factor ^ 0.3) + (offset / 100); 0.5 minimum -->
+                                    <Operation Class="XmlExtensions.FindNodeInherited">
+                                        <xpathDef>{DEF}</xpathDef>
+                                        <xpathLocal>statBases/Beauty</xpathLocal>
+                                        <storeIn>BeautyF</storeIn>
+                                        <defaultValue>1</defaultValue>
+                                    </Operation>
+                                    <Operation Class="XmlExtensions.CreateVariable">
+                                        <storeIn>SocialImpact</storeIn>
+                                        <value>{BeautyF}</value>
+                                        <value2>0.3</value2>
+                                        <operation>^</operation>
+                                    </Operation>
+                                    
+                                    
+                                    <!-- flammability -->
+                                    <Operation Class="XmlExtensions.FindNodeInherited">
+                                        
+                                        <xpathDef>{DEF}</xpathDef>
+                                        <xpathLocal>statBases/Flammability</xpathLocal>
+                                        <storeIn>Flammability</storeIn>
+                                        <defaultValue>1</defaultValue>
+                                    </Operation>
+                                    
+                                    <!-- color -->
+                                    <Operation Class="XmlExtensions.FindNodeInherited">
+                                        <xpathDef>{DEF}</xpathDef>
+                                        <xpathLocal>graphicData/color</xpathLocal>
+                                        <storeIn>color</storeIn>
+                                        <defaultValue>(255,255,255)</defaultValue>
+                                    </Operation>
+                                    
+                                    <!-- texture -->
+                                    <Operation Class="XmlExtensions.FindNodeInherited">
+                                        <xpathDef>{DEF}</xpathDef>
+                                        <xpathLocal>graphicData/texPath</xpathLocal>
+                                        <storeIn>texture</storeIn>
+                                        <defaultValue>none</defaultValue>
+                                    </Operation>
+                                    
+                                    <Operation Class="XmlExtensions.FindNodeInherited">
+                                        <xpathDef>{DEF}</xpathDef>
+                                        <xpathLocal>graphicData/drawSize</xpathLocal>
+                                        <storeIn>Size</storeIn>
+                                        <defaultValue>1,1</defaultValue>
+                                    </Operation>
+                                    
+                                    <Operation Class="XmlExtensions.FindNodeInherited">
+                                        <xpathDef>{DEF}</xpathDef>
+                                        <xpathLocal>graphicData/shadowData/volume</xpathLocal>
+                                        <storeIn>shadow</storeIn>
+                                        <defaultValue>(0.2, 0.2, 0.2)</defaultValue>
+                                    </Operation>
+                                    
+                                    <!--<Operation Class="XmlExtensions.FindNodeInherited">
+                                    <xpathDef>{DEF}</xpathDef>
+                                    <xpathLocal>graphicData/shadowData/volume</xpathLocal>
+                                    <storeIn>shadow</storeIn>
+                                    <defaultValue>(0.2, 0.2, 0.2)</defaultValue>
+                                    </Operation>
+                                    -->
+                                    <!--
+                                    <Operation Class="XmlExtensions.FindNodeInherited">
+                                        <xpathDef>{DEF}</xpathDef>
+                                        <xpathLocal>size</xpathLocal>
+                                        <storeIn>SelectSize</storeIn>
+                                        <defaultValue>(1,1)</defaultValue>
+                                    </Operation>
+                                    -->
+                                </valueOperations>
+                                
+                                
+                                
+                                
+                                
+                                <!-- and make a new race based on those variables --> 
+                                <apply>
+                                    <Operation Class="XmlExtensions.PatchOperationAdd">
+                                        <xpath>Defs</xpath>
+                                        <value>
+                                            
+                                            <AlienRace.ThingDef_AlienRace ParentName="EMR_BBase">
+                                                <defName>zzbEMR_{defName}_Race</defName>
+                                                <label>{label} race</label>
+                                                <description>A sentient {label}.</description>
+                                                <statBases>
+                                                    <MarketValue>{MarketValue}</MarketValue>
+                                                    <MoveSpeed>4.6</MoveSpeed>
+                                                    <ComfyTemperatureMin>16</ComfyTemperatureMin>
+                                                    <ComfyTemperatureMax>26</ComfyTemperatureMax>
+                                                    <!--<LeatherAmount>75</LeatherAmount>-->
+                                                    <RoyalFavorValue>3</RoyalFavorValue>
+                                                    <Mass>{Mass}</Mass>
+                                                    <Flammability>{Flammability}</Flammability>
+                                                    <SocialImpact>{SocialImpact}</SocialImpact>
+                                                    <!--<Beauty>{Beauty}</Beauty>-->
+                                                </statBases>
+                                                <tools>
+                                                    <li>
+                                                        <label>body</label>
+                                                        <capacities>
+                                                            <li>EMR_Slam</li>
+                                                            <li>Blunt</li>
+                                                            <li>Poke</li>
+                                                        </capacities>
+                                                        <power>8.2</power>
+                                                        <cooldownTime>2</cooldownTime>
+                                                        <linkedBodyPartsGroup>EMR_BuildingBody</linkedBodyPartsGroup>
+                                                        <surpriseAttack>
+                                                            <extraMeleeDamages>
+                                                                <li>
+                                                                    <def>Stun</def>
+                                                                    <amount>14</amount>
+                                                                </li>
+                                                            </extraMeleeDamages>
+                                                        </surpriseAttack>
+                                                    </li>
+                                                </tools>
+                                                <race>
+                                                    <thinkTreeMain>Humanlike</thinkTreeMain>
+                                                    <thinkTreeConstant>HumanlikeConstant</thinkTreeConstant>
+                                                    <intelligence>Humanlike</intelligence>
+                                                    <makesFootprints>false</makesFootprints>
+                                                    <lifeExpectancy>80</lifeExpectancy>
+                                                    <!--<leatherDef>Leather_Human</leatherDef>-->
+                                                    <nameCategory>HumanStandard</nameCategory>
+                                                    <body>EMR_Building</body>
+                                                    <baseBodySize>{BodyScale}</baseBodySize>
+                                                    <baseHealthScale>{baseHealthScale}</baseHealthScale>
+                                                    <foodType>OmnivoreHuman</foodType>
+                                                    <gestationPeriodDays>30</gestationPeriodDays>
+                                                    <meatMarketValue>0.8</meatMarketValue>
+                                                    <manhunterOnDamageChance>0.50</manhunterOnDamageChance>
+                                                    <manhunterOnTameFailChance>0.10</manhunterOnTameFailChance>
+                                                    <litterSizeCurve>
+                                                        <points>
+                                                            <li>(0.5, 0)</li>
+                                                            <li>(1, 1)</li>
+                                                            <li>(1.01, 0.02)</li>
+                                                            <li>(3.5, 0)</li>
+                                                        </points>
+                                                    </litterSizeCurve>
+                                                    <lifeStageAges>
+                                                        <li>
+                                                            <def>HumanlikeBaby</def>
+                                                            <minAge>0</minAge>
+                                                        </li>
+                                                        <li>
+                                                            <def>HumanlikeToddler</def>
+                                                            <minAge>1.2</minAge>
+                                                        </li>
+                                                        <li>
+                                                            <def>HumanlikeChild</def>
+                                                            <minAge>4</minAge>
+                                                        </li>
+                                                        <li>
+                                                            <def>HumanlikeTeenager</def>
+                                                            <minAge>13</minAge>
+                                                        </li>
+                                                        <li>
+                                                            <def>HumanlikeAdult</def>
+                                                            <minAge>18</minAge>
+                                                        </li>
+                                                    </lifeStageAges>
+                                                    <soundMeleeHitPawn>Pawn_Melee_Punch_HitPawn</soundMeleeHitPawn>
+                                                    <soundMeleeHitBuilding>Pawn_Melee_Punch_HitBuilding</soundMeleeHitBuilding>
+                                                    <soundMeleeMiss>Pawn_Melee_Punch_Miss</soundMeleeMiss>
+                                                    <soundMeleeDodge>Pawn_MeleeDodge</soundMeleeDodge>
+                                                    <specialShadowData>
+                                                        <volume>{shadow}</volume>
+                                                        <offset>(0,0,-0.0)</offset>
+                                                    </specialShadowData>
+                                                    <ageGenerationCurve>
+                                                        <points>
+                                                            <li>(14,0)</li>
+                                                            <li>(16,100)</li>
+                                                            <li>(50,100)</li>
+                                                            <li>(60,30)</li>
+                                                            <li>(70,18)</li>
+                                                            <li>(80,10)</li>
+                                                            <li>(90,3)</li>
+                                                            <li>(100,0)</li>
+                                                        </points>
+                                                    </ageGenerationCurve>
+                                                    <hediffGiverSets>
+                                                        <li>OrganicStandard</li>
+                                                        <li>Human</li>
+                                                    </hediffGiverSets>
+                                                </race>
+                                                <recipes>
+                                                    <li>ExciseCarcinoma</li>
+                                                    <li>AdministerMechSerumHealer</li>
+                                                    <li>RemoveBodyPart</li>
+                                                    <li>Euthanize</li>
+                                                    <li>Anesthetize</li>
+                                                    <li>CureScaria</li>
+                                                    <li MayRequire="Ludeon.RimWorld.Royalty">CureBloodRot</li>
+                                                    <li MayRequire="Ludeon.RimWorld.Royalty">CureAbasia</li>
+                                                </recipes>
+                                                <ingredient>
+                                                    <mergeCompatibilityTags>
+                                                        <li>HumanMeat</li>
+                                                    </mergeCompatibilityTags>
+                                                </ingredient>
+                                                <alienRace>
+                                                    <generalSettings>
+                                                        <humanRecipeImport>true</humanRecipeImport>
+                                                        <alienPartGenerator>
+                                                            <borderScale>8</borderScale>
+                                                            <atlasScale>8</atlasScale>
+                                                            
+                                                            <colorChannels>
+                                                                <li>
+                                                                    <name>skin</name>
+                                                                    <first Class="ColorGenerator_Options">
+                                                                        <options>
+                                                                            <li>
+                                                                                <weight>100</weight>
+                                                                                <only>RGBA(0.000, 0.000, 0.000, 0.000)</only>
+                                                                            </li>
+                                                                        </options>
+                                                                    </first>
+                                                                    <second Class="ColorGenerator_Options">
+                                                                        <options>
+                                                                            <li>
+                                                                                <weight>100</weight>
+                                                                                <only>RGBA(0.000, 0.000, 0.000, 0.000)</only>
+                                                                            </li>
+                                                                        </options>
+                                                                    </second>
+                                                                </li>
+                                                            </colorChannels>
+                                                            
+                                                            <useGenderedHeads>false</useGenderedHeads>
+                                                            <useGenderedBodies>false</useGenderedBodies>
+                                                            <customDrawSize>{Size}</customDrawSize>                                                            <customHeadDrawSize>{Size}</customHeadDrawSize>
+                                                            <customPortraitDrawSize>(1)</customPortraitDrawSize>
+                                                            <customPortraitHeadDrawSize>(1)</customPortraitHeadDrawSize>
+                                                            <aliencrowntypes>
+                                                                <li></li>
+                                                            </aliencrowntypes>
+                                                            <headBodyPartDef>EMR_BuildingBody</headBodyPartDef>
+                                                            <!--<alienbodytypes>
+                                                            <li>Fat</li>
+                                                            <li>Female</li>
+                                                            <li>Hulk</li>
+                                                            <li>Male</li>
+                                                            <li>Thin</li>
+                                                            </alienbodytypes>-->
+                                                            <bodyAddons>
+                                                            <li>
+                                                                <path>{texture}</path>
+                                                                <bodyPart>EMR_BuildingBody</bodyPart>
+                                                                <inFrontOfBody>false</inFrontOfBody>
+                                                                <layerInvert>false</layerInvert>
+                                                                <drawSize>{Size}</drawSize>
+                                                                <drawnInBed>true</drawnInBed>
+                                                                <drawnDesiccated>true</drawnDesiccated>
+                                                                <colorChannel>base</colorChannel>
+                                                                <debug>false</debug>
+                                                                <drawSizePortrait>(1)</drawSizePortrait>
+                                                            </li>
+                                                        </bodyAddons>
+                                                    </alienPartGenerator>
+                                                    
+                                                </generalSettings>
+                                                <!--<graphicPaths>
+                                                <li>
+                                                <head>{texture}</head>
+                                                <skull>{texture}</skull>
+                                                </li>
+                                                </graphicPaths>-->
+                                                <compatibility>
+                                                    <isFlesh>false</isFlesh>
+                                                    <hasBlood>false</hasBlood>
+                                                    
+                                                </compatibility>
+                                                <styleSettings>
+                                                    <li>
+                                                        <key>HairDef</key>
+                                                        <value>
+                                                            <hasStyle>false</hasStyle>
+                                                            <styleTags />
+                                                        </value>
+                                                    </li>
+                                                    <li>
+                                                        <key>BeardDef</key>
+                                                        <value>
+                                                            <hasStyle>false</hasStyle>
+                                                            <styleTags />
+                                                        </value>
+                                                    </li>
+                                                    <li>
+                                                        <key>TattooDef</key>
+                                                        <value>
+                                                            <hasStyle>false</hasStyle>
+                                                            <styleTags />
+                                                        </value>
+                                                    </li>
+                                                </styleSettings>
+                                                
+                                                <raceRestriction>
+                                                    <!--<onlyUseRaceRestrictedApparel>true</onlyUseRaceRestrictedApparel>-->
+                                                </raceRestriction>
+                                                
+                                            </alienRace>
+                                            
+                                            <modExtensions>
+                                                <li Class="PawnKindRaceDiversification.Extensions.RaceDiversificationPool">
+                                                    <flatGenerationWeight>1</flatGenerationWeight>
+                                                </li>
+                                            </modExtensions>
+                                            
+                                            
+                                        </AlienRace.ThingDef_AlienRace>
+                                        
+                                        <PawnKindDef ParentName="BasePlayerPawnKind">
+                                            <defName>zzbEMR_{defName}_Colonist</defName>
+                                            <race>zzbEMR_{defName}_Race</race>
+                                            <label>colonist</label>
+                                            <defaultFactionType>PlayerColony</defaultFactionType>
+                                            <chemicalAddictionChance>0.06</chemicalAddictionChance>
+                                            <apparelTags>
+                                                <li>IndustrialBasic</li>
+                                            </apparelTags>
+                                            <apparelAllowHeadgearChance>0</apparelAllowHeadgearChance>
+                                            <apparelMoney>350~600</apparelMoney>
+                                            <backstoryCryptosleepCommonality>1</backstoryCryptosleepCommonality>
+                                            <techHediffsChance>0.03</techHediffsChance>
+                                            <techHediffsMoney>50~800</techHediffsMoney>
+                                            <techHediffsTags>
+                                                <li>Poor</li>
+                                                <li>Simple</li>
+                                                <li>ImplantEmpireCommon</li>
+                                            </techHediffsTags>
+                                            <initialResistanceRange>13~21</initialResistanceRange>
+                                        </PawnKindDef>
+                                        
+                                    </value>
+                                </Operation>
+                            </apply>
+                        </Operation>
+                    </caseTrue>
+                    <caseFalse> 
+                        
+                    </caseFalse>
+                </Operation>
+                
+                
+                
+            </apply>
+        </Operation>
+    </caseTrue>
+</Operation>
+</Patch>
+

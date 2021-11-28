@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+    <XmlExtensions.PatchDef Name="EMR_StatSettingGroupDef" Abstract="True">
+        <parameters>
+            <li>tab</li>
+            <li>label</li>
+            <li>description</li>
+            <li>key1</li>
+            <li>key2</li>
+            <li>key3</li>
+            
+        </parameters>
+        <apply>
+            <Operation Class="PatchOperationAdd"><success>Always</success>
+                <xpath>Defs/XmlExtensions.SettingsMenuDef[defName="EVR_Settings"]/settings/li/tabs/li[label="{tab}"]/settings</xpath>
+                <value>
+                    <li Class="XmlExtensions.Setting.Section"><tag>{label}</tag>
+                        <settings>
+                            <li Class="XmlExtensions.Setting.Text">
+                                <font>Medium</font>
+                                <text>{label}</text>
+                            </li>
+                            <li Class="XmlExtensions.Setting.SetColor">
+                                <color>(205,205,205)</color>
+                            </li>
+                            <li Class="XmlExtensions.Setting.Text">
+                                
+                                <keys>
+                                    <li>{key1}</li>
+                                    <li>{key2}</li>
+                                    <li>{key3}</li>
+                                </keys>
+                                
+                                <text>{description}</text>
+                            </li>
+                            <li Class="XmlExtensions.Setting.SetColor"/>
+                        </settings>
+                    </li>
+                    <li Class="XmlExtensions.Setting.Gap">
+                        <spacing>18</spacing>
+                    </li>
+                </value>
+            </Operation>
+        </apply>
+    </XmlExtensions.PatchDef>
+    
+    
+    <XmlExtensions.PatchDef Name="EMR_StatSettingDef" Abstract="True">
+        <parameters>
+            <li>tab</li>
+            <li>group</li>
+            <li>key</li>
+            <li>label</li>
+            <li>description</li>
+            <li>default</li>
+            <li>min</li>
+            <li>max</li>
+        </parameters>
+        <apply>
+            <Operation Class="PatchOperationAdd">
+                <xpath>Defs/XmlExtensions.SettingsMenuDef[defName="EVR_Settings"]/settings/li/tabs/li[label="{tab}"]/settings/li[tag="{group}"]/settings</xpath>
+                <value>
+                    <li Class="XmlExtensions.Setting.GapLine">
+                        <spacing>8</spacing>
+                    </li>
+                    <li Class="XmlExtensions.Setting.SplitColumns">
+                        <gapSize>3</gapSize>
+                        <splits>
+                            <li>0.1</li>
+                            <li>0.07</li>
+                            <li>0.73</li>
+                        </splits>
+                        <settings>
+                            <li>
+                                <li Class="XmlExtensions.Setting.Text">
+                                    <!--<font>Tiny</font>-->
+                                    <anchor>Middle</anchor>
+                                    <text>{label}</text>
+                                </li>
+                            </li>
+                            <li>
+                                
+                                <li Class="XmlExtensions.Setting.Textbox">
+                                    <key>{key}</key>
+                                </li>
+                            </li>
+                            <li>
+                                <li Class="XmlExtensions.Setting.Text">
+                                    <!--<font>Tiny</font>-->
+                                    <text>{description}</text>
+                                </li>
+                                
+                            </li>
+                            <li>
+                                <li Class="XmlExtensions.Setting.ResetSettings">
+                                    <label>reset</label>
+                                    <confirm>false</confirm>
+                                    <keys>
+                                        <li>{key}</li>
+                                    </keys>
+                                </li>
+                                <li Class="XmlExtensions.Setting.Text">
+                                    <font>Tiny</font>
+                                    <text>default={default}</text>
+                                </li>
+                            </li>
+                            
+                        </settings>
+                    </li>
+                    
+                    
+                </value>
+            </Operation>
+            <Operation Class="PatchOperationAdd">
+                <xpath>Defs/XmlExtensions.SettingsMenuDef[defName="EVR_Settings"]/settings/li/tabs/li[label="{tab}"]/settings/li[@Class="XmlExtensions.Setting.ResetSettings"]/keys</xpath>
+                <value>
+                    <li>{key}</li>
+                </value>
+            </Operation>
+        </apply>
+    </XmlExtensions.PatchDef>
+    
+    <XmlExtensions.PatchDef Name="EMR_ToggleableStatSettingDef" Abstract="True">
+        <parameters>
+            <li>tab</li>
+            <li>group</li>
+            <li>key</li>
+            <li>label</li>
+            <li>description</li>
+            <li>default</li>
+        </parameters>
+        <apply>
+            <Operation Class="PatchOperationAdd">
+                <xpath>Defs/XmlExtensions.SettingsMenuDef[defName="EVR_Settings"]/settings/li/tabs/li[label="{tab}"]/settings/li[tag="{group}"]/settings</xpath>
+                <value>
+                    <li Class="XmlExtensions.Setting.GapLine">
+                        <spacing>8</spacing>
+                    </li>
+                    <li Class="XmlExtensions.Setting.SplitColumns">
+                        <gapSize>3</gapSize>
+                        <splits>
+                            <li>0.1</li>
+                            <li>0.07</li>
+                            <li>0.73</li>
+                        </splits>
+                        <settings>
+                            <li>
+                                <li Class="XmlExtensions.Setting.Text">
+                                    <!--<font>Tiny</font>-->
+                                    <anchor>Middle</anchor>
+                                    <text>{label}</text>
+                                </li>
+                            </li>
+                            <li>
+                                
+                                <li Class="XmlExtensions.Setting.Checkbox">
+                                    <key>{key}</key>
+                                </li>
+                            </li>
+                            <li>
+                                <li Class="XmlExtensions.Setting.Text">
+                                    <!--<font>Tiny</font>-->
+                                    <text>{description}</text>
+                                </li>
+                                
+                            </li>
+                            <li>
+                                <li Class="XmlExtensions.Setting.ResetSettings">
+                                    <label>reset</label>
+                                    <confirm>false</confirm>
+                                    <keys>
+                                        <li>{key}</li>
+                                    </keys>
+                                </li>
+                                <li Class="XmlExtensions.Setting.Text">
+                                    <font>Tiny</font>
+                                    <text>default={default}</text>
+                                </li>
+                            </li>
+                            
+                        </settings>
+                    </li>
+                </value>
+            </Operation>
+            <Operation Class="PatchOperationAdd">
+                <xpath>Defs/XmlExtensions.SettingsMenuDef[defName="EVR_Settings"]/settings/li/tabs/li[label="{tab}"]/settings/li[@Class="XmlExtensions.Setting.ResetSettings"]/keys</xpath>
+                <value>
+                    <li>{key}</li>
+                </value>
+            </Operation>
+        </apply>
+    </XmlExtensions.PatchDef>
+</Defs>

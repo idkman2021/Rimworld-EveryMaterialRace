@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+    
+    
+    
+    <XmlExtensions.SettingsMenuDef>
+        <defName>EVR_Settings</defName> <!--Can be anything unique with no periods-->
+        <modId>carnap2.EMR</modId> <!--MUST be the same as the one entered earlier-->    
+        <label>Every Material Race</label> <!-- This is what displays as your mod's name-->    
+        <settings> <!--This is where you define what settings are in the settings menu-->
+            <li Class="XmlExtensions.Setting.TabView">
+                <tabs>
+                    <li>
+                        <label>Race toggles</label>
+                        <settings>
+                            <li Class="XmlExtensions.Setting.Text">
+                                <font>Medium</font>
+                                <text>All settings require a restart.</text>
+                            </li>
+                            <li Class="XmlExtensions.Setting.ResetSettings">
+                                <label>Reset settings on this page</label>
+                                <keys>
+                                </keys>
+                            </li>
+                        </settings>
+                    </li>
+                    <li>
+                        <label>Stat settings</label>
+                        <settings>
+                            <li Class="XmlExtensions.Setting.Text">
+                                <font>Medium</font>
+                                <text>All settings require a restart.</text>
+                            </li>
+                            <li Class="XmlExtensions.Setting.ResetSettings">
+                                <label>Reset all settings on this page</label>
+                                <keys>
+                                </keys>
+                            </li>
+                        </settings>
+                    </li>
+                    <li>
+                        <label>Spawn settings</label>
+                        <settings>
+                            <li Class="XmlExtensions.Setting.Text">
+                                <font>Medium</font>
+                                <text>All settings require a restart.</text>
+                            </li>
+                            <li Class="XmlExtensions.Setting.ResetSettings">
+                                <label>Reset all settings on this page</label>
+                                <keys>
+                                </keys>
+                            </li>
+                        </settings>
+                    </li>
+                    <li>
+                        <label>Bonus settings</label>
+                        <settings>
+                            <li Class="XmlExtensions.Setting.Text">
+                                <font>Medium</font>
+                                <text>All settings require a restart.</text>
+                            </li>
+                            <li Class="XmlExtensions.Setting.ResetSettings">
+                                <label>Reset all settings on this page</label>
+                                <keys>
+                                </keys>
+                            </li>
+                        </settings>
+                    </li>
+                </tabs>
+            </li>
+        </settings>
+    </XmlExtensions.SettingsMenuDef>
+    
+    
+</Defs>

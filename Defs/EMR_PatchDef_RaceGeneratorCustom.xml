@@ -1,0 +1,889 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+    <XmlExtensions.PatchDef Name="EMR_RaceGenDef" Abstract="True">
+        <parameters>
+            <li>EMR_material</li>
+        </parameters>
+        <apply>
+            <Operation Class="XmlExtensions.AggregateValues">
+                <valueOperations>
+                    <!-- load the settings -->
+                    <Operation Class="XmlExtensions.UseSettings">
+                        <modId>carnap2.EMR</modId>
+                        <keys>
+                            
+                            <li>EMR_keyMarketValueBase</li>
+                            <li>EMR_keyMarketValueFlattener</li>
+                            
+                            <li>EMR_keyMassMultiplier</li>
+                            <li>EMR_keyMassOffset</li>
+                            
+                            <li>EMR_keyArmorMultiplier</li>
+                            <li>EMR_keyArmorOffset</li>
+                            
+                            <li>EMR_keyComfyTemperatureMaxBase</li>
+                            <li>EMR_keyComfyTemperatureMinBase</li>
+                            <li>EMR_keyComfyTemperatureMultiplier</li>
+                            
+                            <li>EMR_keyMoveSpeedBase</li>
+                            <li>EMR_keyMoveSpeedPower</li>
+                            
+                            <li>EMR_keyBitePower</li>
+                            <li>EMR_keyFistPower</li>
+                            <li>EMR_keyHeadPower</li>
+                            
+                            <li>EMR_keyHPPower</li>
+                            
+                            <li>EMR_keySocialImpactFactorPower</li>
+                            <li>EMR_keySocialImpactOffsetMultiplier</li>
+                            <li>EMR_keySocialImpactMin</li>
+                            
+                            <li>EMR_keyBaseBodySize</li>
+                            
+                            <li>EMR_keyLeatherAmount</li>
+                            
+                            <li>EMR_keylifeExpectancy</li>
+                            
+                            <li>EMR_keyButcherMaterialAmount</li>
+                        </keys>
+                        <defaultValues>
+                            
+                            <li>1750</li>
+                            <li>3.5</li>
+                            
+                            <li>200</li>
+                            <li>0</li>
+                            
+                            <li>0.4</li>
+                            <li>-0.15</li>
+                            
+                            <li>26</li>
+                            <li>16</li>
+                            <li>2</li>
+                            
+                            <li>4.6</li>
+                            <li>1</li>
+                            
+                            <li>2</li>
+                            <li>1.3</li>
+                            <li>2</li>
+                            
+                            <li>0.5</li>
+                            
+                            <li>0.3</li>
+                            <li>0.01</li>
+                            <li>0.5</li>
+                            
+                            <li>1</li>
+                            
+                            <li>75</li>
+                            
+                            <li>80</li>
+                            
+                            <li>50</li>
+                        </defaultValues>  
+                    </Operation>
+                    
+                    <Operation Class="XmlExtensions.FindNodeInherited">
+                        <xpathDef>{EMR_material}</xpathDef>
+                        <xpathLocal>label</xpathLocal>
+                        <storeIn>label</storeIn>
+                    </Operation>
+                    
+                    <Operation Class="XmlExtensions.CreateVariable">
+                        <storeIn>defName</storeIn>
+                        <value>{EMR_material}/defName</value>
+                        <fromXml>true</fromXml>
+                    </Operation>
+                    
+                    <!-- Market value - the value is flattened to prevent it being too high. If material market value is 1, race market value will always be EMR_keyMarketValueBase (1750 by default). -->
+                    <Operation Class="XmlExtensions.FindNodeInherited">
+                        <xpathDef>{EMR_material}</xpathDef>
+                        <xpathLocal>statBases/MarketValue</xpathLocal>
+                        <defaultValue>1</defaultValue>
+                        <storeIn>MarketValueInitial</storeIn>
+                    </Operation>
+                    <!-- B^F-->
+                    <Operation Class="XmlExtensions.CreateVariable">
+                        <storeIn>MarketValueC</storeIn>
+                        <value>{EMR_keyMarketValueBase}</value>
+                        <value2>{EMR_keyMarketValueFlattener}</value2>
+                        <operation>^</operation>
+                    </Operation>
+                    <!-- M * (B^F) -->
+                    <Operation Class="XmlExtensions.CreateVariable">
+                        <storeIn>MarketValueB</storeIn>
+                        <value>{MarketValueInitial}</value>
+                        <value2>{MarketValueC}</value2>
+                        <operation>*</operation>
+                    </Operation>
+                    <!-- 1/(B^F) -->
+                    <Operation Class="XmlExtensions.CreateVariable">
+                        <storeIn>MarketValueD</storeIn>
+                        <value>1</value>
+                        <value2>{MarketValueC}</value2>
+                        <operation>/</operation>
+                    </Operation>
+                    <!-- (M*(B^F))^(1/(B^F)) -->
+                    <Operation Class="XmlExtensions.CreateVariable">
+                        <storeIn>MarketValue</storeIn>
+                        <value>{MarketValueB}</value>
+                        <value2>{MarketValueD}</value2>
+                        <operation>^</operation>
+                    </Operation>
+                    
+                    <!-- Mass = x*multiplier + offset -->
+                    <Operation Class="XmlExtensions.FindNodeInherited">
+                        <xpathDef>{EMR_material}</xpathDef>
+                        <xpathLocal>statBases/Mass</xpathLocal>
+                        <storeIn>MassA</storeIn>
+                        <defaultValue>0.3</defaultValue>
+                    </Operation>
+                    <Operation Class="XmlExtensions.CreateVariable">
+                        <storeIn>MassB</storeIn>
+                        <value>{MassA}</value>
+                        <value2>{EMR_keyMassMultiplier}</value2>
+                        <operation>*</operation>
+                    </Operation>
+                    <Operation Class="XmlExtensions.CreateVariable">
+                        <storeIn>Mass</storeIn>
+                        <value>{EMR_keyMassOffset}</value>
+                        <value2>{MassB}</value2>
+                        <operation>+</operation>
+                    </Operation>
+                    
+                    <!-- Armor = x*multiplier + offset -->
+                    <Operation Class="XmlExtensions.FindNodeInherited">
+                        <xpathDef>{EMR_material}</xpathDef>
+                        <xpathLocal>statBases/StuffPower_Armor_Sharp</xpathLocal>
+                        <storeIn>StuffPower_Armor_Sharp</storeIn>
+                        <defaultValue>0</defaultValue>
+                    </Operation>
+                    <Operation Class="XmlExtensions.FindNodeInherited">
+                        <xpathDef>{EMR_material}</xpathDef>
+                        <xpathLocal>statBases/StuffPower_Armor_Blunt</xpathLocal>
+                        <storeIn>StuffPower_Armor_Blunt</storeIn>
+                        <defaultValue>0</defaultValue>
+                    </Operation>
+                    <Operation Class="XmlExtensions.FindNodeInherited">
+                        <xpathDef>{EMR_material}</xpathDef>
+                        <xpathLocal>statBases/StuffPower_Armor_Heat</xpathLocal>
+                        <storeIn>StuffPower_Armor_Heat</storeIn>
+                        <defaultValue>0</defaultValue>
+                    </Operation>
+                    
+                    <Operation Class="XmlExtensions.CreateVariable">
+                        <storeIn>ArmorRating_SharpA</storeIn>
+                        <value>{StuffPower_Armor_Sharp}</value>
+                        <value2>{EMR_keyArmorMultiplier}</value2>
+                        <operation>*</operation>
+                    </Operation>
+                    <Operation Class="XmlExtensions.CreateVariable">
+                        <storeIn>ArmorRating_BluntA</storeIn>
+                        <value>{StuffPower_Armor_Blunt}</value>
+                        <value2>{EMR_keyArmorMultiplier}</value2>
+                        <operation>*</operation>
+                    </Operation>
+                    <Operation Class="XmlExtensions.CreateVariable">
+                        <storeIn>ArmorRating_HeatA</storeIn>
+                        <value>{StuffPower_Armor_Heat}</value>
+                        <value2>{EMR_keyArmorMultiplier}</value2>
+                        <operation>*</operation>
+                    </Operation>
+                    
+                    <Operation Class="XmlExtensions.CreateVariable">
+                        <storeIn>ArmorRating_SharpQ</storeIn>
+                        <value>{ArmorRating_SharpA}</value>
+                        <value2>{EMR_keyArmorOffset}</value2>
+                        <operation>+</operation>
+                    </Operation>
+                    <Operation Class="XmlExtensions.CreateVariable">
+                        <storeIn>ArmorRating_BluntQ</storeIn>
+                        <value>{ArmorRating_BluntA}</value>
+                        <value2>{EMR_keyArmorOffset}</value2>
+                        <operation>+</operation>
+                    </Operation>
+                    <Operation Class="XmlExtensions.CreateVariable">
+                        <storeIn>ArmorRating_HeatQ</storeIn>
+                        <value>{ArmorRating_HeatA}</value>
+                        <value2>{EMR_keyArmorOffset}</value2>
+                        <operation>+</operation>
+                    </Operation>
+                    
+                    <Operation Class="XmlExtensions.CreateVariable">
+                        <storeIn>ArmorRating_Sharp</storeIn>
+                        <value>{ArmorRating_SharpQ}</value>
+                        <value2>0</value2>
+                        <operation>max</operation>
+                    </Operation>
+                    <Operation Class="XmlExtensions.CreateVariable">
+                        <storeIn>ArmorRating_Blunt</storeIn>
+                        <value>{ArmorRating_BluntQ}</value>
+                        <value2>0</value2>
+                        <operation>max</operation>
+                    </Operation>
+                    <Operation Class="XmlExtensions.CreateVariable">
+                        <storeIn>ArmorRating_Heat</storeIn>
+                        <value>{ArmorRating_HeatQ}</value>
+                        <value2>0</value2>
+                        <operation>max</operation>
+                    </Operation>
+                    
+                    
+                    <!-- min comfortable temperature = basemin - (StuffPower_Insulation_Cold*multiplier);
+                    max comfortable temperature = basemax + (StuffPower_Insulation_Heat*multiplier) -->
+                    <Operation Class="XmlExtensions.FindNodeInherited">
+                        <xpathDef>{EMR_material}</xpathDef>
+                        <xpathLocal>statBases/StuffPower_Insulation_Cold</xpathLocal>
+                        <storeIn>StuffPower_Insulation_Cold</storeIn>
+                        <defaultValue>0</defaultValue>
+                    </Operation>
+                    <Operation Class="XmlExtensions.FindNodeInherited">
+                        <xpathDef>{EMR_material}</xpathDef>
+                        <xpathLocal>statBases/StuffPower_Insulation_Heat</xpathLocal>
+                        <storeIn>StuffPower_Insulation_Heat</storeIn>
+                        <defaultValue>0</defaultValue>
+                    </Operation>
+                    <Operation Class="XmlExtensions.CreateVariable">
+                        <storeIn>ComfyTemperatureMinA</storeIn>
+                        <value>{StuffPower_Insulation_Cold}</value>
+                        <value2>{EMR_keyComfyTemperatureMultiplier}</value2>
+                        <operation>*</operation>
+                    </Operation>
+                    <Operation Class="XmlExtensions.CreateVariable">
+                        <storeIn>ComfyTemperatureMin</storeIn>
+                        <value>{EMR_keyComfyTemperatureMinBase}</value>
+                        <value2>{ComfyTemperatureMinA}</value2>
+                        <operation>-</operation>
+                    </Operation>
+                    <Operation Class="XmlExtensions.CreateVariable">
+                        <storeIn>ComfyTemperatureMaxA</storeIn>
+                        <value>{StuffPower_Insulation_Heat}</value>
+                        <value2>{EMR_keyComfyTemperatureMultiplier}</value2>
+                        <operation>*</operation>
+                    </Operation>
+                    <Operation Class="XmlExtensions.CreateVariable">
+                        <storeIn>ComfyTemperatureMax</storeIn>
+                        <value>{EMR_keyComfyTemperatureMaxBase}</value>
+                        <value2>{ComfyTemperatureMaxA}</value2>
+                        <operation>+</operation>
+                    </Operation>
+                    
+                    <!-- Move speed = base/(MeleeWeapon_CooldownMultiplier^power)  -->
+                    <Operation Class="XmlExtensions.FindNodeInherited">
+                        <xpathDef>{EMR_material}</xpathDef>
+                        <xpathLocal>stuffProps/statFactors/MeleeWeapon_CooldownMultiplier</xpathLocal>
+                        <defaultValue>1</defaultValue>
+                        <storeIn>MeleeWeapon_CooldownMultiplier</storeIn>
+                    </Operation>
+                    <Operation Class="XmlExtensions.CreateVariable">
+                        <storeIn>MoveSpeedA</storeIn>
+                        <value2>{EMR_keyMoveSpeedPower}</value2>
+                        <value>{MeleeWeapon_CooldownMultiplier}</value>
+                        <operation>^</operation>
+                    </Operation>
+                    <Operation Class="XmlExtensions.CreateVariable">
+                        <storeIn>MoveSpeed</storeIn>
+                        <value>{EMR_keyMoveSpeedBase}</value>
+                        <value2>{MoveSpeedA}</value2>
+                        <operation>/</operation>
+                    </Operation>
+                    
+                    <!-- melee damage = default human damage * (DamageMultiplier^[different values for different attack types])-->
+                    <Operation Class="XmlExtensions.FindNodeInherited">
+                        <xpathDef>{EMR_material}</xpathDef>
+                        <xpathLocal>statBases/SharpDamageMultiplier</xpathLocal>
+                        <storeIn>SharpDamageMultiplier</storeIn>
+                        <defaultValue>1</defaultValue>
+                    </Operation>
+                    <Operation Class="XmlExtensions.FindNodeInherited">
+                        <xpathDef>{EMR_material}</xpathDef>
+                        <xpathLocal>statBases/BluntDamageMultiplier</xpathLocal>
+                        <storeIn>BluntDamageMultiplier</storeIn>
+                        <defaultValue>1</defaultValue>
+                    </Operation>
+                    <Operation Class="XmlExtensions.CreateVariable">
+                        <storeIn>biteA</storeIn>
+                        <value>{SharpDamageMultiplier}</value>
+                        <value2>{EMR_keyBitePower}</value2>
+                        <operation>^</operation>
+                    </Operation>
+                    <Operation Class="XmlExtensions.CreateVariable">
+                        <storeIn>fistA</storeIn>
+                        <value>{BluntDamageMultiplier}</value>
+                        <value2>{EMR_keyFistPower}</value2>
+                        <operation>^</operation>
+                    </Operation>
+                    <Operation Class="XmlExtensions.CreateVariable">
+                        <storeIn>headA</storeIn>
+                        <value>{BluntDamageMultiplier}</value>
+                        <value2>{EMR_keyHeadPower}</value2>
+                        <operation>^</operation>
+                    </Operation>
+                    <Operation Class="XmlExtensions.CreateVariable">
+                        <storeIn>bite</storeIn>
+                        <value>{biteA}</value>
+                        <value2>8.2</value2>
+                        <operation>*</operation>
+                    </Operation>
+                    <Operation Class="XmlExtensions.CreateVariable">
+                        <storeIn>fist</storeIn>
+                        <value>{fistA}</value>
+                        <value2>8.2</value2>
+                        <operation>*</operation>
+                    </Operation>
+                    <Operation Class="XmlExtensions.CreateVariable">
+                        <storeIn>head</storeIn>
+                        <value>{headA}</value>
+                        <value2>5</value2>
+                        <operation>*</operation>
+                    </Operation>
+                    
+                    <!-- Health scale = MaxHitPoints^0.5-->
+                    <Operation Class="XmlExtensions.FindNodeInherited">
+                        <xpathDef>{EMR_material}</xpathDef>
+                        <xpathLocal>stuffProps/statFactors/MaxHitPoints</xpathLocal>
+                        <storeIn>MaxHitPoints</storeIn>
+                        <defaultValue>1</defaultValue>
+                    </Operation>
+                    <Operation Class="XmlExtensions.CreateVariable">
+                        <storeIn>baseHealthScale</storeIn>
+                        <value>{MaxHitPoints}</value>
+                        <value2>{EMR_keyHPPower}</value2>
+                        <operation>^</operation>
+                    </Operation>
+                    
+                    <!-- SocialImpact = (factor ^ 0.3) + (offset / 100); 0.5 minimum -->
+                    <Operation Class="XmlExtensions.FindNodeInherited">
+                        <xpathDef>{EMR_material}</xpathDef>
+                        <xpathLocal>stuffProps/statFactors/Beauty</xpathLocal>
+                        <storeIn>BeautyF</storeIn>
+                        <defaultValue>0</defaultValue>
+                    </Operation>
+                    <Operation Class="XmlExtensions.FindNodeInherited">
+                        <xpathDef>{EMR_material}</xpathDef>
+                        <xpathLocal>stuffProps/statOffsets/Beauty</xpathLocal>
+                        <storeIn>BeautyO</storeIn>
+                        <defaultValue>1</defaultValue>
+                    </Operation>
+                    <Operation Class="XmlExtensions.CreateVariable">
+                        <storeIn>SocialImpactF</storeIn>
+                        <value>{BeautyF}</value>
+                        <value2>{EMR_keySocialImpactFactorPower}</value2>
+                        <operation>^</operation>
+                    </Operation>
+                    <Operation Class="XmlExtensions.CreateVariable">
+                        <storeIn>SocialImpactO</storeIn>
+                        <value>{BeautyO}</value>
+                        <value2>{EMR_keySocialImpactOffsetMultiplier}</value2>
+                        <operation>*</operation>
+                    </Operation>
+                    <Operation Class="XmlExtensions.CreateVariable">
+                        <storeIn>SocialImpactA</storeIn>
+                        <value>{SocialImpactF}</value>
+                        <value2>{SocialImpactO}</value2>
+                        <operation>+</operation>
+                    </Operation>
+                    <Operation Class="XmlExtensions.CreateVariable">
+                        <storeIn>SocialImpact</storeIn>
+                        <value>{SocialImpactA}</value>
+                        <value2>{EMR_keySocialImpactMin}</value2>
+                        <operation>max</operation>
+                    </Operation>
+                    
+                    
+                    <!-- flammability -->
+                    <Operation Class="XmlExtensions.FindNodeInherited">
+                        
+                        <xpathDef>{EMR_material}</xpathDef>
+                        <xpathLocal>stuffProps/statFactors/Flammability</xpathLocal>
+                        <storeIn>FlammabilityA</storeIn>
+                        <defaultValue>1</defaultValue>
+                    </Operation>
+                    <Operation Class="XmlExtensions.CreateVariable">
+                        <storeIn>Flammability</storeIn>
+                        <value>{FlammabilityA}</value>
+                    </Operation>
+                    
+                    <!-- color -->
+                    <Operation Class="XmlExtensions.FindNodeInherited">
+                        <xpathDef>{EMR_material}</xpathDef>
+                        <xpathLocal>stuffProps/color</xpathLocal>
+                        <storeIn>color</storeIn>
+                        <defaultValue>(100,100,100)</defaultValue>
+                    </Operation>
+                    
+                    
+                    <!-- commonality is processed separately -->
+                    
+                    
+                    
+                    
+                </valueOperations>
+                
+                
+                
+                
+                
+                <!-- and make a new race based on those variables --> 
+                <apply>
+                    <Operation Class="XmlExtensions.PatchOperationAdd">
+                        <xpath>Defs</xpath>
+                        <value>
+                            
+                            <AlienRace.ThingDef_AlienRace ParentName="BasePawn">
+                                <defName>zzEMR_{defName}_Race</defName>
+                                <label>{label} race</label>
+                                <description>People made of {label}.</description>
+                                <statBases>
+                                    <MarketValue>{MarketValue}</MarketValue>
+                                    <MoveSpeed>{MoveSpeed}</MoveSpeed>
+                                    <ComfyTemperatureMin>{ComfyTemperatureMin}</ComfyTemperatureMin>
+                                    <ComfyTemperatureMax>{ComfyTemperatureMax}</ComfyTemperatureMax>
+                                    <LeatherAmount>{EMR_keyLeatherAmount}</LeatherAmount>
+                                    <RoyalFavorValue>3</RoyalFavorValue>
+                                    <Mass>{Mass}</Mass>
+                                    <ArmorRating_Blunt>{ArmorRating_Blunt}</ArmorRating_Blunt>
+                                    <ArmorRating_Sharp>{ArmorRating_Sharp}</ArmorRating_Sharp>
+                                    <ArmorRating_Heat>{ArmorRating_Heat}</ArmorRating_Heat>
+                                    <Flammability>{Flammability}</Flammability>
+                                    <SocialImpact>{SocialImpact}</SocialImpact>
+                                    <!--<Beauty>{Beauty}</Beauty>-->
+                                </statBases>
+                                <tools>
+                                    <li>
+                                        <label>left fist</label>
+                                        <capacities>
+                                            <li>Blunt</li>
+                                        </capacities>
+                                        <power>{fist}</power>
+                                        <cooldownTime>2</cooldownTime>
+                                        <linkedBodyPartsGroup>LeftHand</linkedBodyPartsGroup>
+                                        <surpriseAttack>
+                                            <extraMeleeDamages>
+                                                <li>
+                                                    <def>Stun</def>
+                                                    <amount>14</amount>
+                                                </li>
+                                            </extraMeleeDamages>
+                                        </surpriseAttack>
+                                    </li>
+                                    <li>
+                                        <label>right fist</label>
+                                        <capacities>
+                                            <li>Blunt</li>
+                                        </capacities>
+                                        <power>{fist}</power>
+                                        <cooldownTime>2</cooldownTime>
+                                        <linkedBodyPartsGroup>RightHand</linkedBodyPartsGroup>
+                                        <surpriseAttack>
+                                            <extraMeleeDamages>
+                                                <li>
+                                                    <def>Stun</def>
+                                                    <amount>14</amount>
+                                                </li>
+                                            </extraMeleeDamages>
+                                        </surpriseAttack>
+                                    </li>
+                                    <li>
+                                        <label>teeth</label>
+                                        <capacities>
+                                            <li>Bite</li>
+                                        </capacities>
+                                        <power>{bite}</power>
+                                        <cooldownTime>2</cooldownTime>
+                                        <linkedBodyPartsGroup>Teeth</linkedBodyPartsGroup>
+                                        <chanceFactor>0.07</chanceFactor>
+                                        <soundMeleeHit>Pawn_Melee_HumanBite_Hit</soundMeleeHit>
+                                        <soundMeleeMiss>Pawn_Melee_HumanBite_Miss</soundMeleeMiss>
+                                    </li>
+                                    <li>
+                                        <label>head</label>
+                                        <capacities>
+                                            <li>Blunt</li>
+                                        </capacities>
+                                        <power>{head}</power>
+                                        <cooldownTime>2</cooldownTime>
+                                        <linkedBodyPartsGroup>HeadAttackTool</linkedBodyPartsGroup>
+                                        <ensureLinkedBodyPartsGroupAlwaysUsable>true</ensureLinkedBodyPartsGroupAlwaysUsable>
+                                        <chanceFactor>0.2</chanceFactor>
+                                    </li>
+                                </tools>
+                                <butcherProducts>
+                                    <temp>{EMR_keyButcherMaterialAmount}</temp>
+                                </butcherProducts>
+                                <race>
+                                    <thinkTreeMain>Humanlike</thinkTreeMain>
+                                    <thinkTreeConstant>HumanlikeConstant</thinkTreeConstant>
+                                    <intelligence>Humanlike</intelligence>
+                                    <makesFootprints>true</makesFootprints>
+                                    <lifeExpectancy>{EMR_keylifeExpectancy}</lifeExpectancy>
+                                    <leatherDef>Leather_Human</leatherDef>
+                                    <nameCategory>HumanStandard</nameCategory>
+                                    <body>Human</body>
+                                    <baseBodySize>{EMR_keyBaseBodySize}</baseBodySize>
+                                    <baseHealthScale>{baseHealthScale}</baseHealthScale>
+                                    <foodType>OmnivoreHuman</foodType>
+                                    <gestationPeriodDays>30</gestationPeriodDays>
+                                    <meatMarketValue>0.8</meatMarketValue>
+                                    <manhunterOnDamageChance>0.50</manhunterOnDamageChance>
+                                    <manhunterOnTameFailChance>0.10</manhunterOnTameFailChance>
+                                    <litterSizeCurve>
+                                        <points>
+                                            <li>(0.5, 0)</li>
+                                            <li>(1, 1)</li>
+                                            <li>(1.01, 0.02)</li>
+                                            <li>(3.5, 0)</li>
+                                        </points>
+                                    </litterSizeCurve>
+                                    <lifeStageAges>
+                                        <li>
+                                            <def>HumanlikeBaby</def>
+                                            <minAge>0</minAge>
+                                        </li>
+                                        <li>
+                                            <def>HumanlikeToddler</def>
+                                            <minAge>1.2</minAge>
+                                        </li>
+                                        <li>
+                                            <def>HumanlikeChild</def>
+                                            <minAge>4</minAge>
+                                        </li>
+                                        <li>
+                                            <def>HumanlikeTeenager</def>
+                                            <minAge>13</minAge>
+                                        </li>
+                                        <li>
+                                            <def>HumanlikeAdult</def>
+                                            <minAge>18</minAge>
+                                        </li>
+                                    </lifeStageAges>
+                                    <soundMeleeHitPawn>Pawn_Melee_Punch_HitPawn</soundMeleeHitPawn>
+                                    <soundMeleeHitBuilding>Pawn_Melee_Punch_HitBuilding</soundMeleeHitBuilding>
+                                    <soundMeleeMiss>Pawn_Melee_Punch_Miss</soundMeleeMiss>
+                                    <soundMeleeDodge>Pawn_MeleeDodge</soundMeleeDodge>
+                                    <specialShadowData>
+                                        <volume>(0.3, 0.8, 0.4)</volume>
+                                        <offset>(0,0,-0.3)</offset>
+                                    </specialShadowData>
+                                    <ageGenerationCurve>
+                                        <points>
+                                            <li>(14,0)</li>
+                                            <li>(16,100)</li>
+                                            <li>(50,100)</li>
+                                            <li>(60,30)</li>
+                                            <li>(70,18)</li>
+                                            <li>(80,10)</li>
+                                            <li>(90,3)</li>
+                                            <li>(100,0)</li>
+                                        </points>
+                                    </ageGenerationCurve>
+                                    <hediffGiverSets>
+                                        <li>OrganicStandard</li>
+                                        <li>Human</li>
+                                    </hediffGiverSets>
+                                </race>
+                                <recipes>
+                                    <li>ExciseCarcinoma</li>
+                                    <li>AdministerMechSerumHealer</li>
+                                    <li>RemoveBodyPart</li>
+                                    <li>Euthanize</li>
+                                    <li>Anesthetize</li>
+                                    <li>CureScaria</li>
+                                    <li MayRequire="Ludeon.RimWorld.Royalty">CureBloodRot</li>
+                                    <li MayRequire="Ludeon.RimWorld.Royalty">CureAbasia</li>
+                                </recipes>
+                                <ingredient>
+                                    <mergeCompatibilityTags>
+                                        <li>HumanMeat</li>
+                                    </mergeCompatibilityTags>
+                                </ingredient>
+                                <alienRace>
+                                    <generalSettings>
+                                        <humanRecipeImport>true</humanRecipeImport>
+                                        <alienPartGenerator>
+                                            <useGenderedHeads>true</useGenderedHeads>
+                                            <useGenderedBodies>false</useGenderedBodies>
+                                            <alienbodytypes>
+                                                <li>Fat</li>
+                                                <li>Female</li>
+                                                <li>Hulk</li>
+                                                <li>Male</li>
+                                                <li>Thin</li>
+                                            </alienbodytypes>
+                                            <colorChannels>
+                                                <li>
+                                                    <name>skin</name>
+                                                    <first Class="ColorGenerator_Options">
+                                                        <options>
+                                                            <li>
+                                                                <weight>10</weight>
+                                                                <only>{color}</only>
+                                                            </li>
+                                                        </options>
+                                                    </first>
+                                                </li>
+                                            </colorChannels>
+                                        </alienPartGenerator>
+                                        
+                                    </generalSettings>
+                                    <!--<graphicPaths>
+                                    <li>
+                                    <body>Things/Pawn/MyRace/Bodies/</body>
+                                    </li>
+                                    </graphicPaths>-->
+                                </alienRace>
+                                <!--
+                                <modExtensions>
+                                <li Class="PawnKindRaceDiversification.Extensions.RaceDiversificationPool">
+                                <flatGenerationWeight>{commonality}</flatGenerationWeight>
+                                </li>
+                                </modExtensions>
+                                -->
+                            </AlienRace.ThingDef_AlienRace>
+                            
+                            <PawnKindDef ParentName="BasePlayerPawnKind">
+                                <defName>EMR_{defName}_Colonist</defName>
+                                <race>zzEMR_{defName}_Race</race>
+                                <label>colonist</label>
+                                <defaultFactionType>PlayerColony</defaultFactionType>
+                                <chemicalAddictionChance>0.06</chemicalAddictionChance>
+                                <apparelTags>
+                                    <li>IndustrialBasic</li>
+                                </apparelTags>
+                                <apparelAllowHeadgearChance>0</apparelAllowHeadgearChance>
+                                <apparelMoney>350~600</apparelMoney>
+                                <backstoryCryptosleepCommonality>1</backstoryCryptosleepCommonality>
+                                <techHediffsChance>0.03</techHediffsChance>
+                                <techHediffsMoney>50~800</techHediffsMoney>
+                                <techHediffsTags>
+                                    <li>Poor</li>
+                                    <li>Simple</li>
+                                    <li>ImplantEmpireCommon</li>
+                                </techHediffsTags>
+                                <initialResistanceRange>13~21</initialResistanceRange>
+                            </PawnKindDef>
+                            
+                        </value>
+                    </Operation>
+                </apply>
+            </Operation>
+            
+            <!-- fix stone generating no  armor because it has no StuffPower_Armor. HP is used instead. Armor = (HP-1)/4 -->
+            <Operation Class="XmlExtensions.ConditionalInherited">
+                <xpathDef>{EMR_material}</xpathDef>
+                <xpathLocal>statBases/StuffPower_Armor_Sharp</xpathLocal>
+                <caseFalse> 
+                    <Operation Class="XmlExtensions.ConditionalInherited">
+                        <xpathDef>{EMR_material}</xpathDef>
+                        <xpathLocal>statBases/StuffPower_Armor_Blunt</xpathLocal>
+                        <caseFalse>
+                            <Operation Class="XmlExtensions.ConditionalInherited">
+                                <xpathDef>{EMR_material}</xpathDef>
+                                <xpathLocal>statBases/StuffPower_Armor_Heat</xpathLocal>
+                                <caseFalse> 
+                                    <Operation Class="XmlExtensions.AggregateValues">
+                                        <valueOperations>
+                                            <Operation Class="XmlExtensions.UseSettings">
+                                                <modId>carnap2.EMR</modId>
+                                                <keys>
+                                                    <li>EMR_keyStonyMaxHitPointsArmorMultiplier</li>
+                                                    <li>EMR_keyStonyMaxHitPointsArmorOffset</li>
+                                                </keys>
+                                                <defaultValues>
+                                                    <li>0.4</li>
+                                                    <li>-0.15</li>
+                                                </defaultValues>  
+                                            </Operation>
+                                            <Operation Class="XmlExtensions.CreateVariable">
+                                                <storeIn>defName</storeIn>
+                                                <value>{EMR_material}/defName</value>
+                                                <fromXml>true</fromXml>
+                                            </Operation>
+                                            <Operation Class="XmlExtensions.FindNodeInherited">
+                                                <xpathDef>{EMR_material}</xpathDef>
+                                                <xpathLocal>stuffProps/statFactors/MaxHitPoints</xpathLocal>
+                                                <storeIn>MaxHitPoints</storeIn>
+                                                <defaultValue>1</defaultValue>
+                                            </Operation>
+                                            <Operation Class="XmlExtensions.CreateVariable">
+                                                <storeIn>StuffPower_Armor</storeIn>
+                                                <value>{MaxHitPoints}</value>
+                                                <value2>1</value2>
+                                                <operation>-</operation>
+                                            </Operation>
+                                            <Operation Class="XmlExtensions.CreateVariable">
+                                                <storeIn>ArmorRatingA</storeIn>
+                                                <value>{StuffPower_Armor}</value>
+                                                <value2>{EMR_keyStonyMaxHitPointsArmorMultiplier}</value2>
+                                                <operation>*</operation>
+                                            </Operation>
+                                            <Operation Class="XmlExtensions.CreateVariable">
+                                                <storeIn>ArmorRating</storeIn>
+                                                <value>{ArmorRatingA}</value>
+                                                <value2>{EMR_keyStonyMaxHitPointsArmorOffset}</value2>
+                                                <operation>+</operation>
+                                            </Operation>
+                                        </valueOperations>
+                                        <apply>
+                                            <Operation Class="XmlExtensions.PatchOperationReplace">
+                                                <xpath>Defs/AlienRace.ThingDef_AlienRace[defName="zzEMR_{defName}_Race"]/statBases/ArmorRating_Sharp</xpath>
+                                                <value>
+                                                    <ArmorRating_Sharp>{ArmorRating}</ArmorRating_Sharp>
+                                                </value>
+                                            </Operation>
+                                            <Operation Class="XmlExtensions.PatchOperationReplace">
+                                                <xpath>Defs/AlienRace.ThingDef_AlienRace[defName="zzEMR_{defName}_Race"]/statBases/ArmorRating_Blunt</xpath>
+                                                <value>
+                                                    <ArmorRating_Blunt>{ArmorRating}</ArmorRating_Blunt>
+                                                </value>
+                                            </Operation>
+                                            <Operation Class="XmlExtensions.PatchOperationReplace">
+                                                <xpath>Defs/AlienRace.ThingDef_AlienRace[defName="zzEMR_{defName}_Race"]/statBases/ArmorRating_Heat</xpath>
+                                                <value>
+                                                    <ArmorRating_Heat>{ArmorRating}</ArmorRating_Heat>
+                                                </value>
+                                            </Operation>
+                                        </apply>
+                                    </Operation>
+                                </caseFalse>
+                            </Operation>
+                        </caseFalse>
+                    </Operation>
+                </caseFalse>
+            </Operation>
+            
+            <!-- fix smallVolume Market Value -->
+            <Operation Class="XmlExtensions.ConditionalInherited">
+                <xpathDef>{EMR_material}</xpathDef>
+                <xpathLocal>smallVolume</xpathLocal>
+                <caseTrue> 
+                    <Operation Class="XmlExtensions.AggregateValues">
+                        <valueOperations>
+                            <Operation Class="XmlExtensions.UseSettings">
+                                <modId>carnap2.EMR</modId>
+                                <keys>
+                                    <li>EMR_keyMarketValueBase</li>
+                                    <li>EMR_keyMarketValueFlattener</li>
+                                    <li>EMR_keySmallVolumeMultiplier</li>
+                                </keys>
+                                <defaultValues>
+                                    <li>1750</li>
+                                    <li>3.5</li>
+                                    <li>10</li>
+                                </defaultValues>  
+                            </Operation>
+                            <Operation Class="XmlExtensions.CreateVariable">
+                                <storeIn>defName</storeIn>
+                                <value>{EMR_material}/defName</value>
+                                <fromXml>true</fromXml>
+                            </Operation>
+                            <Operation Class="XmlExtensions.FindNodeInherited">
+                                <xpathDef>{EMR_material}</xpathDef>
+                                <xpathLocal>statBases/MarketValue</xpathLocal>
+                                <defaultValue>1</defaultValue>
+                                <storeIn>MarketValueInitialA</storeIn>
+                            </Operation>
+                            <Operation Class="XmlExtensions.CreateVariable">
+                                <storeIn>MarketValueInitial</storeIn>
+                                <value>{MarketValueInitialA}</value>
+                                <value2>{EMR_keySmallVolumeMultiplier}</value2>
+                                <operation>*</operation>
+                            </Operation>
+                            <!-- B^F-->
+                            <Operation Class="XmlExtensions.CreateVariable">
+                                <storeIn>MarketValueC</storeIn>
+                                <value>{EMR_keyMarketValueBase}</value>
+                                <value2>{EMR_keyMarketValueFlattener}</value2>
+                                <operation>^</operation>
+                            </Operation>
+                            <!-- M * (B^F) -->
+                            <Operation Class="XmlExtensions.CreateVariable">
+                                <storeIn>MarketValueB</storeIn>
+                                <value>{MarketValueInitial}</value>
+                                <value2>{MarketValueC}</value2>
+                                <operation>*</operation>
+                            </Operation>
+                            <!-- 1/(B^F) -->
+                            <Operation Class="XmlExtensions.CreateVariable">
+                                <storeIn>MarketValueD</storeIn>
+                                <value>1</value>
+                                <value2>{MarketValueC}</value2>
+                                <operation>/</operation>
+                            </Operation>
+                            <!-- (M*(B^F))^(1/(B^F)) -->
+                            <Operation Class="XmlExtensions.CreateVariable">
+                                <storeIn>MarketValue</storeIn>
+                                <value>{MarketValueB}</value>
+                                <value2>{MarketValueD}</value2>
+                                <operation>^</operation>
+                            </Operation>
+                        </valueOperations>
+                        <apply>
+                            <Operation Class="XmlExtensions.PatchOperationReplace">
+                                <xpath>Defs/AlienRace.ThingDef_AlienRace[defName="zzEMR_{defName}_Race"]/statBases/MarketValue</xpath>
+                                <value>
+                                    <MarketValue>{MarketValue}</MarketValue>
+                                </value>
+                            </Operation>
+                        </apply>
+                    </Operation>
+                </caseTrue>
+            </Operation>
+            
+            <!-- butcher material set -->
+            <Operation Class="XmlExtensions.AggregateValues">
+                <valueOperations>
+                    <Operation Class="XmlExtensions.CreateVariable">
+                        <storeIn>defName</storeIn>
+                        <value>{EMR_material}/defName</value>
+                        <fromXml>true</fromXml>
+                    </Operation>
+                </valueOperations>
+                <apply>
+                    <Operation Class="PatchOperationSetName">
+                        <xpath>Defs/AlienRace.ThingDef_AlienRace[defName="zzEMR_{defName}_Race"]/butcherProducts/temp</xpath>
+                        <name>{defName}</name>
+                    </Operation>
+                </apply>
+            </Operation>
+            <Operation Class="XmlExtensions.OptionalPatch">
+                <modId>carnap2.EMR</modId>
+                <key>EMR_UsePRD</key>
+                <defaultValue>true</defaultValue>
+                <caseTrue>
+                    <Operation Class="XmlExtensions.AggregateValues">
+                        <valueOperations>
+                            <Operation Class="XmlExtensions.CreateVariable">
+                                <storeIn>defName</storeIn>
+                                <value>{EMR_material}/defName</value>
+                                <fromXml>true</fromXml>
+                            </Operation>
+                            <Operation Class="XmlExtensions.FindNodeInherited">
+                                <xpathDef>{EMR_material}</xpathDef>
+                                <xpathLocal>stuffProps/commonality</xpathLocal>
+                                <storeIn>commonality</storeIn>
+                                <defaultValue>0.01</defaultValue>
+                            </Operation>
+                        </valueOperations>
+                        <apply>
+                            <Operation Class="XmlExtensions.PatchOperationAdd">
+                                <xpath>Defs/AlienRace.ThingDef_AlienRace[defName="zzEMR_{defName}_Race"]</xpath>
+                                <value>
+                                    <modExtensions>
+                                        <li Class="PawnKindRaceDiversification.Extensions.RaceDiversificationPool">
+                                            <flatGenerationWeight>{commonality}</flatGenerationWeight>
+                                        </li>
+                                    </modExtensions>
+                                </value>
+                            </Operation>
+                        </apply>
+                        
+                        
+                    </Operation>
+                    
+                </caseTrue>
+            </Operation>
+        </apply>
+    </XmlExtensions.PatchDef>
+</Defs>

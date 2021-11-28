@@ -1,0 +1,665 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- base patch to create a race from each material with default settings. -->
+<Patch>
+    
+    <!-- For each material... -->
+    <Operation Class="XmlExtensions.ForEach">
+        <xpath>Defs/ThingDef[(defName) and (stuffProps)]</xpath>
+        <storeIn>DEF</storeIn>
+        <apply>
+            
+            <!-- ...I create a bunch of variables from material's statBases, statOffsets and statFactors. The variables are immediately processed into race variables. -->
+            <Operation Class="XmlExtensions.AggregateValues">
+                <valueOperations>
+                    
+                    <Operation Class="XmlExtensions.FindNodeInherited">
+                        <xpathDef>{DEF}</xpathDef>
+                        <xpathLocal>label</xpathLocal>
+                        <storeIn>label</storeIn>
+                    </Operation>
+                    
+                    <Operation Class="XmlExtensions.CreateVariable">
+                        <storeIn>defName</storeIn>
+                        <value>{DEF}/defName</value>
+                        <fromXml>true</fromXml>
+                    </Operation>
+                    
+                    <!-- Market value = (x*10000000000000)^0.249464 which prevents market value being ridiculously high. For example:
+                    Materials with MarketValue=1 will create races with market value=1750;
+                    Materials with MarketValue=10 will create races with market value=3108;
+                    Materials with MarketValue=100 will create races with market value=5520. -->
+                    <Operation Class="XmlExtensions.FindNodeInherited">
+                        <xpathDef>{DEF}</xpathDef>
+                        <xpathLocal>statBases/MarketValue</xpathLocal>
+                        <defaultValue>1</defaultValue>
+                        <storeIn>MarketValueA</storeIn>
+                    </Operation>
+                    <Operation Class="XmlExtensions.CreateVariable">
+                        <storeIn>MarketValueB</storeIn>
+                        <value>{MarketValueA}</value>
+                        <value2>10000000000000</value2>
+                        <operation>*</operation>
+                    </Operation>
+                    <Operation Class="XmlExtensions.CreateVariable">
+                        <storeIn>MarketValue</storeIn>
+                        <value>{MarketValueB}</value>
+                        <value2>0.249464</value2>
+                        <operation>^</operation>
+                    </Operation>
+                    
+                    <!-- Mass = x*200 -->
+                    <Operation Class="XmlExtensions.FindNodeInherited">
+                        <xpathDef>{DEF}</xpathDef>
+                        <xpathLocal>statBases/Mass</xpathLocal>
+                        <storeIn>MassA</storeIn>
+                        <defaultValue>0.3</defaultValue>
+                    </Operation>
+                    <Operation Class="XmlExtensions.CreateVariable">
+                        <storeIn>Mass</storeIn>
+                        <value>{MassA}</value>
+                        <value2>200</value2>
+                        <operation>*</operation>
+                    </Operation>
+                    
+                    <!-- Armor = x/3 - 0.15 -->
+                    <Operation Class="XmlExtensions.FindNodeInherited">
+                        <xpathDef>{DEF}</xpathDef>
+                        <xpathLocal>statBases/StuffPower_Armor_Sharp</xpathLocal>
+                        <storeIn>StuffPower_Armor_Sharp</storeIn>
+                        <defaultValue>0</defaultValue>
+                    </Operation>
+                    <Operation Class="XmlExtensions.FindNodeInherited">
+                        <xpathDef>{DEF}</xpathDef>
+                        <xpathLocal>statBases/StuffPower_Armor_Blunt</xpathLocal>
+                        <storeIn>StuffPower_Armor_Blunt</storeIn>
+                        <defaultValue>0</defaultValue>
+                    </Operation>
+                    <Operation Class="XmlExtensions.FindNodeInherited">
+                        <xpathDef>{DEF}</xpathDef>
+                        <xpathLocal>statBases/StuffPower_Armor_Heat</xpathLocal>
+                        <storeIn>StuffPower_Armor_Heat</storeIn>
+                        <defaultValue>0</defaultValue>
+                    </Operation>
+                    
+                    <Operation Class="XmlExtensions.CreateVariable">
+                        <storeIn>ArmorRating_SharpA</storeIn>
+                        <value>{StuffPower_Armor_Sharp}</value>
+                        <value2>3</value2>
+                        <operation>/</operation>
+                    </Operation>
+                    <Operation Class="XmlExtensions.CreateVariable">
+                        <storeIn>ArmorRating_BluntA</storeIn>
+                        <value>{StuffPower_Armor_Blunt}</value>
+                        <value2>3</value2>
+                        <operation>/</operation>
+                    </Operation>
+                    <Operation Class="XmlExtensions.CreateVariable">
+                        <storeIn>ArmorRating_HeatA</storeIn>
+                        <value>{StuffPower_Armor_Heat}</value>
+                        <value2>3</value2>
+                        <operation>/</operation>
+                    </Operation>
+                    
+                    <Operation Class="XmlExtensions.CreateVariable">
+                        <storeIn>ArmorRating_Sharp</storeIn>
+                        <value>{ArmorRating_SharpA}</value>
+                        <value2>0.15</value2>
+                        <operation>-</operation>
+                    </Operation>
+                    <Operation Class="XmlExtensions.CreateVariable">
+                        <storeIn>ArmorRating_Blunt</storeIn>
+                        <value>{ArmorRating_BluntA}</value>
+                        <value2>0.15</value2>
+                        <operation>-</operation>
+                    </Operation>
+                    <Operation Class="XmlExtensions.CreateVariable">
+                        <storeIn>ArmorRating_Heat</storeIn>
+                        <value>{ArmorRating_HeatA}</value>
+                        <value2>0.15</value2>
+                        <operation>-</operation>
+                    </Operation>
+                    
+                    
+                    
+                    <!-- min comfortable temperature = 16 - (StuffPower_Insulation_Cold*2);
+                    max comfortable temperature = 26 + (StuffPower_Insulation_Heat*2) -->
+                    <Operation Class="XmlExtensions.FindNodeInherited">
+                        <xpathDef>{DEF}</xpathDef>
+                        <xpathLocal>statBases/StuffPower_Insulation_Cold</xpathLocal>
+                        <storeIn>StuffPower_Insulation_Cold</storeIn>
+                        <defaultValue>0</defaultValue>
+                    </Operation>
+                    <Operation Class="XmlExtensions.FindNodeInherited">
+                        <xpathDef>{DEF}</xpathDef>
+                        <xpathLocal>statBases/StuffPower_Insulation_Heat</xpathLocal>
+                        <storeIn>StuffPower_Insulation_Heat</storeIn>
+                        <defaultValue>0</defaultValue>
+                    </Operation>
+                    <Operation Class="XmlExtensions.CreateVariable">
+                        <storeIn>ComfyTemperatureMinA</storeIn>
+                        <value>{StuffPower_Insulation_Cold}</value>
+                        <value2>2</value2>
+                        <operation>*</operation>
+                    </Operation>
+                    <Operation Class="XmlExtensions.CreateVariable">
+                        <storeIn>ComfyTemperatureMin</storeIn>
+                        <value>16</value>
+                        <value2>{ComfyTemperatureMinA}</value2>
+                        <operation>-</operation>
+                    </Operation>
+                    <Operation Class="XmlExtensions.CreateVariable">
+                        <storeIn>ComfyTemperatureMaxA</storeIn>
+                        <value>{StuffPower_Insulation_Heat}</value>
+                        <value2>2</value2>
+                        <operation>*</operation>
+                    </Operation>
+                    <Operation Class="XmlExtensions.CreateVariable">
+                        <storeIn>ComfyTemperatureMax</storeIn>
+                        <value>26</value>
+                        <value2>{ComfyTemperatureMaxA}</value2>
+                        <operation>+</operation>
+                    </Operation>
+                    
+                    <!-- Move speed = 4.6/MeleeWeapon_CooldownMultiplier  -->
+                    <Operation Class="XmlExtensions.FindNodeInherited">
+                        <xpathDef>{DEF}</xpathDef>
+                        <xpathLocal>stuffProps/statFactors/MeleeWeapon_CooldownMultiplier</xpathLocal>
+                        <defaultValue>1</defaultValue>
+                        <storeIn>MeleeWeapon_CooldownMultiplier</storeIn>
+                    </Operation>
+                    <Operation Class="XmlExtensions.CreateVariable">
+                        <storeIn>MoveSpeed</storeIn>
+                        <value>4.6</value>
+                        <value2>{MeleeWeapon_CooldownMultiplier}</value2>
+                        <operation>/</operation>
+                    </Operation>
+                    
+                    <!-- melee damage = default human damage * (DamageMultiplier^[different values for different attack types])-->
+                    <Operation Class="XmlExtensions.FindNodeInherited">
+                        <xpathDef>{DEF}</xpathDef>
+                        <xpathLocal>statBases/SharpDamageMultiplier</xpathLocal>
+                        <storeIn>SharpDamageMultiplier</storeIn>
+                        <defaultValue>1</defaultValue>
+                    </Operation>
+                    <Operation Class="XmlExtensions.FindNodeInherited">
+                        <xpathDef>{DEF}</xpathDef>
+                        <xpathLocal>statBases/BluntDamageMultiplier</xpathLocal>
+                        <storeIn>BluntDamageMultiplier</storeIn>
+                        <defaultValue>1</defaultValue>
+                    </Operation>
+                    <Operation Class="XmlExtensions.CreateVariable">
+                        <storeIn>biteA</storeIn>
+                        <value>{SharpDamageMultiplier}</value>
+                        <value2>2</value2>
+                        <operation>^</operation>
+                    </Operation>
+                    <Operation Class="XmlExtensions.CreateVariable">
+                        <storeIn>fistA</storeIn>
+                        <value>{BluntDamageMultiplier}</value>
+                        <value2>1.3</value2>
+                        <operation>^</operation>
+                    </Operation>
+                    <Operation Class="XmlExtensions.CreateVariable">
+                        <storeIn>headA</storeIn>
+                        <value>{BluntDamageMultiplier}</value>
+                        <value2>2</value2>
+                        <operation>^</operation>
+                    </Operation>
+                    <Operation Class="XmlExtensions.CreateVariable">
+                        <storeIn>bite</storeIn>
+                        <value>{biteA}</value>
+                        <value2>8.2</value2>
+                        <operation>*</operation>
+                    </Operation>
+                    <Operation Class="XmlExtensions.CreateVariable">
+                        <storeIn>fist</storeIn>
+                        <value>{fistA}</value>
+                        <value2>8.2</value2>
+                        <operation>*</operation>
+                    </Operation>
+                    <Operation Class="XmlExtensions.CreateVariable">
+                        <storeIn>head</storeIn>
+                        <value>{headA}</value>
+                        <value2>5</value2>
+                        <operation>*</operation>
+                    </Operation>
+                    
+                    <!-- Health scale = MaxHitPoints^0.5-->
+                    <Operation Class="XmlExtensions.FindNodeInherited">
+                        <xpathDef>{DEF}</xpathDef>
+                        <xpathLocal>stuffProps/statFactors/MaxHitPoints</xpathLocal>
+                        <storeIn>MaxHitPoints</storeIn>
+                        <defaultValue>1</defaultValue>
+                    </Operation>
+                    <Operation Class="XmlExtensions.CreateVariable">
+                        <storeIn>baseHealthScale</storeIn>
+                        <value>{MaxHitPoints}</value>
+                        <value2>0.5</value2>
+                        <operation>^</operation>
+                    </Operation>
+                    
+                    <!-- SocialImpact = (factor ^ 0.3) + (offset / 100); 0.5 minimum -->
+                    <Operation Class="XmlExtensions.FindNodeInherited">
+                        <xpathDef>{DEF}</xpathDef>
+                        <xpathLocal>stuffProps/statFactors/Beauty</xpathLocal>
+                        <storeIn>BeautyF</storeIn>
+                        <defaultValue>0</defaultValue>
+                    </Operation>
+                    <Operation Class="XmlExtensions.FindNodeInherited">
+                        <xpathDef>{DEF}</xpathDef>
+                        <xpathLocal>stuffProps/statOffsets/Beauty</xpathLocal>
+                        <storeIn>BeautyO</storeIn>
+                        <defaultValue>1</defaultValue>
+                    </Operation>
+                    <Operation Class="XmlExtensions.CreateVariable">
+                        <storeIn>SocialImpactF</storeIn>
+                        <value>{BeautyF}</value>
+                        <value2>0.3</value2>
+                        <operation>^</operation>
+                    </Operation>
+                    <Operation Class="XmlExtensions.CreateVariable">
+                        <storeIn>SocialImpactO</storeIn>
+                        <value>{BeautyO}</value>
+                        <value2>100</value2>
+                        <operation>/</operation>
+                    </Operation>
+                    <Operation Class="XmlExtensions.CreateVariable">
+                        <storeIn>SocialImpactA</storeIn>
+                        <value>{SocialImpactF}</value>
+                        <value2>{SocialImpactO}</value2>
+                        <operation>+</operation>
+                    </Operation>
+                    <Operation Class="XmlExtensions.CreateVariable">
+                        <storeIn>SocialImpact</storeIn>
+                        <value>{SocialImpactA}</value>
+                        <value2>0.5</value2>
+                        <operation>max</operation>
+                    </Operation>
+                    
+                    
+                    <!-- flammability -->
+                    <Operation Class="XmlExtensions.FindNodeInherited">
+                        
+                        <xpathDef>{DEF}</xpathDef>
+                        <xpathLocal>stuffProps/statFactors/Flammability</xpathLocal>
+                        <storeIn>FlammabilityA</storeIn>
+                        <defaultValue>1</defaultValue>
+                    </Operation>
+                    <Operation Class="XmlExtensions.CreateVariable">
+                        <storeIn>Flammability</storeIn>
+                        <value>{FlammabilityA}</value>
+                    </Operation>
+                    
+                    <!-- color -->
+                    <Operation Class="XmlExtensions.FindNodeInherited">
+                        <xpathDef>{DEF}</xpathDef>
+                        <xpathLocal>stuffProps/color</xpathLocal>
+                        <storeIn>color</storeIn>
+                        <defaultValue>(100,100,100)</defaultValue>
+                    </Operation>
+                </valueOperations>
+                
+                
+                
+                
+                
+                <!-- and make a new race based on those variables --> 
+                <apply>
+                    <Operation Class="XmlExtensions.PatchOperationAdd">
+                        <xpath>Defs</xpath>
+                        <value>
+                            
+                            <AlienRace.ThingDef_AlienRace ParentName="BasePawn">
+                                <defName>EMR_{defName}_Race</defName>
+                                <label>{label} race</label>
+                                <description>People made of {label}</description>
+                                <statBases>
+                                    <MarketValue>{MarketValue}</MarketValue>
+                                    <MoveSpeed>{MoveSpeed}</MoveSpeed>
+                                    <ComfyTemperatureMin>{ComfyTemperatureMin}</ComfyTemperatureMin>
+                                    <ComfyTemperatureMax>{ComfyTemperatureMax}</ComfyTemperatureMax>
+                                    <LeatherAmount>75</LeatherAmount>
+                                    <RoyalFavorValue>3</RoyalFavorValue>
+                                    <Mass>{Mass}</Mass>
+                                    <ArmorRating_Blunt>{ArmorRating_Blunt}</ArmorRating_Blunt>
+                                    <ArmorRating_Sharp>{ArmorRating_Sharp}</ArmorRating_Sharp>
+                                    <ArmorRating_Heat>{ArmorRating_Heat}</ArmorRating_Heat>
+                                    <Flammability>{Flammability}</Flammability>
+                                    <SocialImpact>{SocialImpact}</SocialImpact>
+                                    <!--<Beauty>{Beauty}</Beauty>-->
+                                </statBases>
+                                <tools>
+                                    <li>
+                                        <label>left fist</label>
+                                        <capacities>
+                                            <li>Blunt</li>
+                                        </capacities>
+                                        <power>{fist}</power>
+                                        <cooldownTime>2</cooldownTime>
+                                        <linkedBodyPartsGroup>LeftHand</linkedBodyPartsGroup>
+                                        <surpriseAttack>
+                                            <extraMeleeDamages>
+                                                <li>
+                                                    <def>Stun</def>
+                                                    <amount>14</amount>
+                                                </li>
+                                            </extraMeleeDamages>
+                                        </surpriseAttack>
+                                    </li>
+                                    <li>
+                                        <label>right fist</label>
+                                        <capacities>
+                                            <li>Blunt</li>
+                                        </capacities>
+                                        <power>{fist}</power>
+                                        <cooldownTime>2</cooldownTime>
+                                        <linkedBodyPartsGroup>RightHand</linkedBodyPartsGroup>
+                                        <surpriseAttack>
+                                            <extraMeleeDamages>
+                                                <li>
+                                                    <def>Stun</def>
+                                                    <amount>14</amount>
+                                                </li>
+                                            </extraMeleeDamages>
+                                        </surpriseAttack>
+                                    </li>
+                                    <li>
+                                        <label>teeth</label>
+                                        <capacities>
+                                            <li>Bite</li>
+                                        </capacities>
+                                        <power>{bite}</power>
+                                        <cooldownTime>2</cooldownTime>
+                                        <linkedBodyPartsGroup>Teeth</linkedBodyPartsGroup>
+                                        <chanceFactor>0.07</chanceFactor>
+                                        <soundMeleeHit>Pawn_Melee_HumanBite_Hit</soundMeleeHit>
+                                        <soundMeleeMiss>Pawn_Melee_HumanBite_Miss</soundMeleeMiss>
+                                    </li>
+                                    <li>
+                                        <label>head</label>
+                                        <capacities>
+                                            <li>Blunt</li>
+                                        </capacities>
+                                        <power>{head}</power>
+                                        <cooldownTime>2</cooldownTime>
+                                        <linkedBodyPartsGroup>HeadAttackTool</linkedBodyPartsGroup>
+                                        <ensureLinkedBodyPartsGroupAlwaysUsable>true</ensureLinkedBodyPartsGroupAlwaysUsable>
+                                        <chanceFactor>0.2</chanceFactor>
+                                    </li>
+                                </tools>
+                                <race>
+                                    <thinkTreeMain>Humanlike</thinkTreeMain>
+                                    <thinkTreeConstant>HumanlikeConstant</thinkTreeConstant>
+                                    <intelligence>Humanlike</intelligence>
+                                    <makesFootprints>true</makesFootprints>
+                                    <lifeExpectancy>80</lifeExpectancy>
+                                    <leatherDef>Leather_Human</leatherDef>
+                                    <nameCategory>HumanStandard</nameCategory>
+                                    <body>Human</body>
+                                    <baseBodySize>1</baseBodySize>
+                                    <baseHealthScale>{baseHealthScale}</baseHealthScale>
+                                    <foodType>OmnivoreHuman</foodType>
+                                    <gestationPeriodDays>30</gestationPeriodDays>
+                                    <meatMarketValue>0.8</meatMarketValue>
+                                    <manhunterOnDamageChance>0.50</manhunterOnDamageChance>
+                                    <manhunterOnTameFailChance>0.10</manhunterOnTameFailChance>
+                                    <litterSizeCurve>
+                                        <points>
+                                            <li>(0.5, 0)</li>
+                                            <li>(1, 1)</li>
+                                            <li>(1.01, 0.02)</li>
+                                            <li>(3.5, 0)</li>
+                                        </points>
+                                    </litterSizeCurve>
+                                    <lifeStageAges>
+                                        <li>
+                                            <def>HumanlikeBaby</def>
+                                            <minAge>0</minAge>
+                                        </li>
+                                        <li>
+                                            <def>HumanlikeToddler</def>
+                                            <minAge>1.2</minAge>
+                                        </li>
+                                        <li>
+                                            <def>HumanlikeChild</def>
+                                            <minAge>4</minAge>
+                                        </li>
+                                        <li>
+                                            <def>HumanlikeTeenager</def>
+                                            <minAge>13</minAge>
+                                        </li>
+                                        <li>
+                                            <def>HumanlikeAdult</def>
+                                            <minAge>18</minAge>
+                                        </li>
+                                    </lifeStageAges>
+                                    <soundMeleeHitPawn>Pawn_Melee_Punch_HitPawn</soundMeleeHitPawn>
+                                    <soundMeleeHitBuilding>Pawn_Melee_Punch_HitBuilding</soundMeleeHitBuilding>
+                                    <soundMeleeMiss>Pawn_Melee_Punch_Miss</soundMeleeMiss>
+                                    <soundMeleeDodge>Pawn_MeleeDodge</soundMeleeDodge>
+                                    <specialShadowData>
+                                        <volume>(0.3, 0.8, 0.4)</volume>
+                                        <offset>(0,0,-0.3)</offset>
+                                    </specialShadowData>
+                                    <ageGenerationCurve>
+                                        <points>
+                                            <li>(14,0)</li>
+                                            <li>(16,100)</li>
+                                            <li>(50,100)</li>
+                                            <li>(60,30)</li>
+                                            <li>(70,18)</li>
+                                            <li>(80,10)</li>
+                                            <li>(90,3)</li>
+                                            <li>(100,0)</li>
+                                        </points>
+                                    </ageGenerationCurve>
+                                    <hediffGiverSets>
+                                        <li>OrganicStandard</li>
+                                        <li>Human</li>
+                                    </hediffGiverSets>
+                                </race>
+                                <recipes>
+                                    <li>ExciseCarcinoma</li>
+                                    <li>AdministerMechSerumHealer</li>
+                                    <li>RemoveBodyPart</li>
+                                    <li>Euthanize</li>
+                                    <li>Anesthetize</li>
+                                    <li>CureScaria</li>
+                                    <li MayRequire="Ludeon.RimWorld.Royalty">CureBloodRot</li>
+                                    <li MayRequire="Ludeon.RimWorld.Royalty">CureAbasia</li>
+                                </recipes>
+                                <ingredient>
+                                    <mergeCompatibilityTags>
+                                        <li>HumanMeat</li>
+                                    </mergeCompatibilityTags>
+                                </ingredient>
+                                <alienRace>
+                                    <generalSettings>
+                                        <humanRecipeImport>true</humanRecipeImport>
+                                        <alienPartGenerator>
+                                            <useGenderedHeads>true</useGenderedHeads>
+                                            <useGenderedBodies>false</useGenderedBodies>
+                                            <alienbodytypes>
+                                                <li>Fat</li>
+                                                <li>Female</li>
+                                                <li>Hulk</li>
+                                                <li>Male</li>
+                                                <li>Thin</li>
+                                            </alienbodytypes>
+                                            <colorChannels>
+                                                <li>
+                                                    <name>skin</name>
+                                                    <first Class="ColorGenerator_Options">
+                                                        <options>
+                                                            <li>
+                                                                <weight>10</weight>
+                                                                <only>{color}</only>
+                                                            </li>
+                                                        </options>
+                                                    </first>
+                                                </li>
+                                            </colorChannels>
+                                        </alienPartGenerator>
+                                        
+                                    </generalSettings>
+                                    <!--<graphicPaths>
+                                    <li>
+                                    <body>Things/Pawn/MyRace/Bodies/</body>
+                                    </li>
+                                    </graphicPaths>-->
+                                </alienRace>
+                            </AlienRace.ThingDef_AlienRace>
+                            
+                            <PawnKindDef ParentName="BasePlayerPawnKind">
+                                <defName>EMR_{defName}_Colonist</defName>
+                                <race>EMR_{defName}_Race</race>
+                                <label>colonist</label>
+                                <defaultFactionType>PlayerColony</defaultFactionType>
+                                <chemicalAddictionChance>0.06</chemicalAddictionChance>
+                                <apparelTags>
+                                    <li>IndustrialBasic</li>
+                                </apparelTags>
+                                <apparelAllowHeadgearChance>0</apparelAllowHeadgearChance>
+                                <apparelMoney>350~600</apparelMoney>
+                                <backstoryCryptosleepCommonality>1</backstoryCryptosleepCommonality>
+                                <techHediffsChance>0.03</techHediffsChance>
+                                <techHediffsMoney>50~800</techHediffsMoney>
+                                <techHediffsTags>
+                                    <li>Poor</li>
+                                    <li>Simple</li>
+                                    <li>ImplantEmpireCommon</li>
+                                </techHediffsTags>
+                                <initialResistanceRange>13~21</initialResistanceRange>
+                            </PawnKindDef>
+                            
+                        </value>
+                    </Operation>
+                </apply>
+            </Operation>
+            
+            <!-- fix stone generating no  armor because it has no StuffPower_Armor. HP is used instead. Armor = (HP-1)/4 -->
+            <Operation Class="XmlExtensions.ConditionalInherited">
+                <xpathDef>{DEF}</xpathDef>
+                <xpathLocal>statBases/StuffPower_Armor_Sharp</xpathLocal>
+                <caseFalse> 
+                    <Operation Class="XmlExtensions.ConditionalInherited">
+                        <xpathDef>{DEF}</xpathDef>
+                        <xpathLocal>statBases/StuffPower_Armor_Blunt</xpathLocal>
+                        <caseFalse> 
+                            <Operation Class="XmlExtensions.ConditionalInherited">
+                                <xpathDef>{DEF}</xpathDef>
+                                <xpathLocal>statBases/StuffPower_Armor_Heat</xpathLocal>
+                                <caseFalse> 
+                                    <Operation Class="XmlExtensions.AggregateValues">
+                                        <valueOperations>
+                                            
+                                            <Operation Class="XmlExtensions.CreateVariable">
+                                                <storeIn>defName</storeIn>
+                                                <value>{DEF}/defName</value>
+                                                <fromXml>true</fromXml>
+                                            </Operation>
+                                            <Operation Class="XmlExtensions.FindNodeInherited">
+                                                <xpathDef>{DEF}</xpathDef>
+                                                <xpathLocal>stuffProps/statFactors/MaxHitPoints</xpathLocal>
+                                                <storeIn>MaxHitPoints</storeIn>
+                                                <defaultValue>1</defaultValue>
+                                            </Operation>
+                                            <Operation Class="XmlExtensions.CreateVariable">
+                                                <storeIn>StuffPower_Armor</storeIn>
+                                                <value>{MaxHitPoints}</value>
+                                                <value2>1</value2>
+                                                <operation>-</operation>
+                                            </Operation>
+                                            <Operation Class="XmlExtensions.CreateVariable">
+                                                <storeIn>ArmorRating_Sharp</storeIn>
+                                                <value>{StuffPower_Armor}</value>
+                                                <value2>4</value2>
+                                                <operation>/</operation>
+                                            </Operation>
+                                            <Operation Class="XmlExtensions.CreateVariable">
+                                                <storeIn>ArmorRating_Blunt</storeIn>
+                                                <value>{StuffPower_Armor}</value>
+                                                <value2>4</value2>
+                                                <operation>/</operation>
+                                            </Operation>
+                                            <Operation Class="XmlExtensions.CreateVariable">
+                                                <storeIn>ArmorRating_Heat</storeIn>
+                                                <value>{StuffPower_Armor}</value>
+                                                <value2>4</value2>
+                                                <operation>/</operation>
+                                            </Operation>
+                                        </valueOperations>
+                                        <apply>
+                                            <Operation Class="XmlExtensions.PatchOperationReplace">
+                                                <xpath>Defs/AlienRace.ThingDef_AlienRace[defName="EMR_{defName}_Race"]/statBases/ArmorRating_Sharp</xpath>
+                                                <value>
+                                                    <ArmorRating_Sharp>{ArmorRating_Sharp}</ArmorRating_Sharp>
+                                                </value>
+                                            </Operation>
+                                            <Operation Class="XmlExtensions.PatchOperationReplace">
+                                                <xpath>Defs/AlienRace.ThingDef_AlienRace[defName="EMR_{defName}_Race"]/statBases/ArmorRating_Blunt</xpath>
+                                                <value>
+                                                    <ArmorRating_Blunt>{ArmorRating_Blunt}</ArmorRating_Blunt>
+                                                </value>
+                                            </Operation>
+                                            <Operation Class="XmlExtensions.PatchOperationReplace">
+                                                <xpath>Defs/AlienRace.ThingDef_AlienRace[defName="EMR_{defName}_Race"]/statBases/ArmorRating_Heat</xpath>
+                                                <value>
+                                                    <ArmorRating_Heat>{ArmorRating_Heat}</ArmorRating_Heat>
+                                                </value>
+                                            </Operation>
+                                        </apply>
+                                    </Operation>
+                                </caseFalse>
+                            </Operation>
+                        </caseFalse>
+                    </Operation>
+                </caseFalse>
+            </Operation>
+            
+            <!-- fix smallVolume Market Value -->
+            <Operation Class="XmlExtensions.ConditionalInherited">
+                <xpathDef>{DEF}</xpathDef>
+                <xpathLocal>smallVolume</xpathLocal>
+                <caseTrue> 
+                    <Operation Class="XmlExtensions.AggregateValues">
+                        <valueOperations>
+                            <Operation Class="XmlExtensions.CreateVariable">
+                                <storeIn>defName</storeIn>
+                                <value>{DEF}/defName</value>
+                                <fromXml>true</fromXml>
+                            </Operation>
+                            <Operation Class="XmlExtensions.FindNodeInherited">
+                                <xpathDef>{DEF}</xpathDef>
+                                <xpathLocal>statBases/MarketValue</xpathLocal>
+                                <defaultValue>1</defaultValue>
+                                <storeIn>MarketValueA</storeIn>
+                            </Operation>
+                            <Operation Class="XmlExtensions.CreateVariable">
+                                <storeIn>MarketValueB</storeIn>
+                                <value>{MarketValueA}</value>
+                                <value2>100000000000000</value2>
+                                <operation>*</operation>
+                            </Operation>
+                            <Operation Class="XmlExtensions.CreateVariable">
+                                <storeIn>MarketValue</storeIn>
+                                <value>{MarketValueB}</value>
+                                <value2>0.249464</value2>
+                                <operation>^</operation>
+                            </Operation>
+                        </valueOperations>
+                        <apply>
+                            <Operation Class="XmlExtensions.PatchOperationReplace">
+                                <xpath>Defs/AlienRace.ThingDef_AlienRace[defName="EMR_{defName}_Race"]/statBases/MarketValue</xpath>
+                                <value>
+                                    <MarketValue>{MarketValue}</MarketValue>
+                                </value>
+                            </Operation>
+                        </apply>
+                    </Operation>
+                </caseTrue>
+            </Operation>
+            
+        </apply>
+    </Operation>
+</Patch>

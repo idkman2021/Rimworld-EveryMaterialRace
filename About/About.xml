@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+  <name>Every Material Race</name>
+  <author>test</author>
+  <!--<url>https://github.com/idkman2021/Rimworld-TPatches/releases/latest</url>-->
+  <packageId>carnap2.EMR</packageId>
+  <supportedVersions>
+	<li>1.3</li>
+  </supportedVersions>
+  <description>Automatically creates a race from every vanilla and modded material (e.g. steel people, marble people, unobtanium people). Race stats are affected by material stats. All races are toggleable using settings menu. Made using XML Extensions.
+      
+Load after all mods that add materials.</description>
+    <modDependencies>
+    <!-- Using hugslib as an example here. -->
+        <li>
+            <packageId>imranfish.xmlextensions</packageId>
+            <displayName>XML Extensions</displayName>
+            <downloadUrl>https://github.com/15adhami/XmlExtensions/releases/latest</downloadUrl>
+            <steamWorkshopUrl>steam://url/CommunityFilePage/2574315206</steamWorkshopUrl>
+        </li>
+        <li>
+            <packageId>erdelf.HumanoidAlienRaces</packageId>
+            <displayName>Humanoid Alien Races</displayName>
+            <downloadUrl>https://github.com/erdelf/AlienRaces/releases/latest</downloadUrl>
+            <steamWorkshopUrl>steam://url/CommunityFilePage/839005762</steamWorkshopUrl>
+        </li>
+        <li>
+			<packageId>solidwires.pawnkindracediversification</packageId>
+			<displayName>Pawnkind Race Diversification</displayName>
+			<steamWorkshopUrl>https://steamcommunity.com/sharedfiles/filedetails/?id=2460358429</steamWorkshopUrl>
+		</li>
+    </modDependencies>
+  <loadAfter>
+        <li>imranfish.xmlextensions</li>
+        <li>erdelf.HumanoidAlienRaces</li>
+        <li>solidwires.pawnkindracediversification</li>
+    </loadAfter>
+  <incompatibleWith>
+    </incompatibleWith>
+</ModMetaData>

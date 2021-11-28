@@ -1,0 +1,617 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Patch>
+    <!-- stat settings -->
+    <!-- move speed -->
+    <Operation Class="XmlExtensions.ApplyPatch">
+        <patchName>EMR_StatSettingGroupDef</patchName>
+        <arguments>
+            <li>Stat settings</li>
+            <li>Move speed</li>
+            <li>Move speed = {EMR_keyMoveSpeedBase} / (MeleeWeapon_CooldownMultiplier ^ {EMR_keyMoveSpeedPower}). \nSet Power to 0 if you don't want custom movement speeds.</li>
+            <li>EMR_keyMoveSpeedBase</li>
+            <li>EMR_keyMoveSpeedPower</li>
+            <li></li>
+        </arguments>
+    </Operation>
+    <Operation Class="XmlExtensions.ApplyPatch">
+        <patchName>EMR_StatSettingDef</patchName>
+        <arguments>
+            <li>Stat settings</li>
+            <li>Move speed</li>
+            <li>EMR_keyMoveSpeedBase</li>
+            <li>Base</li>
+            <li>Base move speed. \nIf Power is set to 0, all material races will have move speed equal to this value.</li>
+            <li>4.6</li>
+            <li>0</li>
+            <li>10</li>
+        </arguments>
+    </Operation>
+    <Operation Class="XmlExtensions.ApplyPatch">
+        <patchName>EMR_StatSettingDef</patchName>
+        <arguments>
+            <li>Stat settings</li>
+            <li>Move speed</li>
+            <li>EMR_keyMoveSpeedPower</li>
+            <li>Power</li>
+            <li>Higher = MeleeWeapon_CooldownMultiplier will have stronger effect on Move Speed.</li>
+            <li>1</li>
+            <li>0</li>
+            <li>10</li>
+        </arguments>
+    </Operation>
+    
+    <!-- HP -->
+    <Operation Class="XmlExtensions.ApplyPatch">
+        <patchName>EMR_StatSettingGroupDef</patchName>
+        <arguments>
+            <li>Stat settings</li>
+            <li>HP</li>
+            <li>Health scale = MaxHitPoints ^ {EMR_keyHPPower} \nSet to 0 if you don't want custom health scales.</li>
+            <li>EMR_keyHPPower</li>
+            <li></li>
+            <li></li>
+        </arguments>
+    </Operation>
+    <Operation Class="XmlExtensions.ApplyPatch">
+        <patchName>EMR_StatSettingDef</patchName>
+        <arguments>
+            <li>Stat settings</li>
+            <li>HP</li>
+            <li>EMR_keyHPPower</li>
+            <li>Power</li>
+            <li>Higher = MaxHitPoints will have stronger effect on Health Scale.</li>
+            <li>0.5</li>
+            <li>0</li>
+            <li>10</li>
+        </arguments>
+    </Operation>
+    
+    
+    <!-- Melee -->
+    <Operation Class="XmlExtensions.ApplyPatch">
+        <patchName>EMR_StatSettingGroupDef</patchName>
+        <arguments>
+            <li>Stat settings</li>
+            <li>Melee</li>
+            <li>Fist damage = 8.2 * (BluntDamageMultiplier ^ {EMR_keyFistPower}) \nBite damage = 8.2 * SharpDamageMultiplier ^ {EMR_keyBitePower} \nHead damage = 5 * BluntDamageMultiplier ^ {EMR_keyHeadPower} \nSet to 0 if you don't want custom melee DPS.</li>
+            <li>EMR_keyBitePower</li>
+            <li>EMR_keyFistPower</li>
+            <li>EMR_keyHeadPower</li>
+        </arguments>
+    </Operation>
+    <Operation Class="XmlExtensions.ApplyPatch">
+        <patchName>EMR_StatSettingDef</patchName>
+        <arguments>
+            <li>Stat settings</li>
+            <li>Melee</li>
+            <li>EMR_keyFistPower</li>
+            <li>Fist power</li>
+            <li>Higher = BluntDamageMultiplier will have stronger effect on fist damage.</li>
+            <li>1.3</li>
+            <li>0</li>
+            <li>10</li>
+        </arguments>
+    </Operation>
+    <Operation Class="XmlExtensions.ApplyPatch">
+        <patchName>EMR_StatSettingDef</patchName>
+        <arguments>
+            <li>Stat settings</li>
+            <li>Melee</li>
+            <li>EMR_keyBitePower</li>
+            <li>Bite power</li>
+            <li>Higher = SharpDamageMultiplier will have stronger effect on biting damage.</li>
+            <li>2</li>
+            <li>0</li>
+            <li>10</li>
+        </arguments>
+    </Operation>
+    <Operation Class="XmlExtensions.ApplyPatch">
+        <patchName>EMR_StatSettingDef</patchName>
+        <arguments>
+            <li>Stat settings</li>
+            <li>Melee</li>
+            <li>EMR_keyHeadPower</li>
+            <li>Head power</li>
+            <li>Higher = BluntDamageMultiplier will have stronger effect on head-bumping damage.</li>
+            <li>2</li>
+            <li>0</li>
+            <li>10</li>
+        </arguments>
+    </Operation>
+    
+    
+    <!-- Armor -->
+    <Operation Class="XmlExtensions.ApplyPatch">
+        <patchName>EMR_StatSettingGroupDef</patchName>
+        <arguments>
+            <li>Stat settings</li>
+            <li>Armor</li>
+            <li>Armor = StuffPower_Armor_x * {EMR_keyArmorMultiplier} + {EMR_keyArmorOffset} \nSet both values to 0 if you don't want armor.</li>
+            <li>EMR_keyArmorMultiplier</li>
+            <li>EMR_keyArmorOffset</li>
+            <li></li>
+        </arguments>
+    </Operation>
+    <Operation Class="XmlExtensions.ApplyPatch">
+        <patchName>EMR_StatSettingDef</patchName>
+        <arguments>
+            <li>Stat settings</li>
+            <li>Armor</li>
+            <li>EMR_keyArmorMultiplier</li>
+            <li>Multiplier</li>
+            <li>Armor is multiplied by this value.</li>
+            <li>0.35</li>
+            <li>0</li>
+            <li>10</li>
+        </arguments>
+    </Operation>
+    <Operation Class="XmlExtensions.ApplyPatch">
+        <patchName>EMR_StatSettingDef</patchName>
+        <arguments>
+            <li>Stat settings</li>
+            <li>Armor</li>
+            <li>EMR_keyArmorOffset</li>
+            <li>Offset</li>
+            <li>Armor is offset by this value.</li>
+            <li>-0.15</li>
+            <li>-100</li>
+            <li>100</li>
+        </arguments>
+    </Operation>
+    
+    
+    <!-- Market Value -->
+    <Operation Class="XmlExtensions.ApplyPatch">
+        <patchName>EMR_StatSettingGroupDef</patchName>
+        <arguments>
+            <li>Stat settings</li>
+            <li>Market value</li>
+            <li>Market value = (MarketValue * ({EMR_keyMarketValueBase} ^ {EMR_keyMarketValueFlattener})) ^ ((1 / ({EMR_keyMarketValueBase} ^ {EMR_keyMarketValueFlattener})) \nSet Flattener to 100 or higher if you don't want custom market values.</li>
+            <li>EMR_keyMarketValueBase</li>
+            <li>EMR_keyMarketValueFlattener</li>
+            <li></li>
+        </arguments>
+    </Operation>
+    <Operation Class="XmlExtensions.ApplyPatch">
+        <patchName>EMR_StatSettingDef</patchName>
+        <arguments>
+            <li>Stat settings</li>
+            <li>Market value</li>
+            <li>EMR_keyMarketValueBase</li>
+            <li>Base</li>
+            <li>Base market value. Recommended to set to 1750.</li>
+            <li>1750</li>
+            <li>0</li>
+            <li>100000</li>
+        </arguments>
+    </Operation>
+    <Operation Class="XmlExtensions.ApplyPatch">
+        <patchName>EMR_StatSettingDef</patchName>
+        <arguments>
+            <li>Stat settings</li>
+            <li>Market value</li>
+            <li>EMR_keyMarketValueFlattener</li>
+            <li>Flattener</li>
+            <li>Higher = material market values have less effect on race market values.</li>
+            <li>3.5</li>
+            <li>0</li>
+            <li>100000</li>
+        </arguments>
+    </Operation>
+    
+    <!-- Mass -->
+    <Operation Class="XmlExtensions.ApplyPatch">
+        <patchName>EMR_StatSettingGroupDef</patchName>
+        <arguments>
+            <li>Stat settings</li>
+            <li>Mass</li>
+            <li>Mass = Mass * ({EMR_keyMassMultiplier} + {EMR_keyMassOffset}. \nSet multiplier to 0 and offset to 60 if you don't want custom mass.</li>
+            <li>EMR_keyMassMultiplier</li>
+            <li>EMR_keyMassOffset</li>
+            <li></li>
+        </arguments>
+    </Operation>
+    <Operation Class="XmlExtensions.ApplyPatch">
+        <patchName>EMR_StatSettingDef</patchName>
+        <arguments>
+            <li>Stat settings</li>
+            <li>Mass</li>
+            <li>EMR_keyMassMultiplier</li>
+            <li>Multiplier</li>
+            <li>Mass is multiplied by this value.</li>
+            <li>200</li>
+            <li>0</li>
+            <li>10000</li>
+        </arguments>
+    </Operation>
+    <Operation Class="XmlExtensions.ApplyPatch">
+        <patchName>EMR_StatSettingDef</patchName>
+        <arguments>
+            <li>Stat settings</li>
+            <li>Mass</li>
+            <li>EMR_keyMassOffset</li>
+            <li>Offset</li>
+            <li>Mass is offset by this value.</li>
+            <li>0</li>
+            <li>-10000</li>
+            <li>10000</li>
+        </arguments>
+    </Operation>
+    
+    
+    <!-- temperature -->
+    <Operation Class="XmlExtensions.ApplyPatch">
+        <patchName>EMR_StatSettingGroupDef</patchName>
+        <arguments>
+            <li>Stat settings</li>
+            <li>Temperature</li>
+            <li>Min temperature = {EMR_keyComfyTemperatureMinBase} - (StuffPower_Insulation_Cold * {EMR_keyComfyTemperatureMultiplier}) \nMax temperature = {EMR_keyComfyTemperatureMaxBase} - (StuffPower_Insulation_Heat * {EMR_keyComfyTemperatureMultiplier}) \nSet multiplier to 0 if you don't want custom temperature tolerances.</li>
+            <li>EMR_keyComfyTemperatureMaxBase</li>
+            <li>EMR_keyComfyTemperatureMinBase</li>
+            <li>EMR_keyComfyTemperatureMultiplier</li>
+        </arguments>
+    </Operation>
+    <Operation Class="XmlExtensions.ApplyPatch">
+        <patchName>EMR_StatSettingDef</patchName>
+        <arguments>
+            <li>Stat settings</li>
+            <li>Temperature</li>
+            <li>EMR_keyComfyTemperatureMaxBase</li>
+            <li>Max base</li>
+            <li>Base maximum comfortable temperature</li>
+            <li>26</li>
+            <li>-1000</li>
+            <li>1000</li>
+        </arguments>
+    </Operation>
+    <Operation Class="XmlExtensions.ApplyPatch">
+        <patchName>EMR_StatSettingDef</patchName>
+        <arguments>
+            <li>Stat settings</li>
+            <li>Temperature</li>
+            <li>EMR_keyComfyTemperatureMinBase</li>
+            <li>Min base</li>
+            <li>Base minimum comfortable temperature</li>
+            <li>16</li>
+            <li>-1000</li>
+            <li>1000</li>
+        </arguments>
+    </Operation>
+    <Operation Class="XmlExtensions.ApplyPatch">
+        <patchName>EMR_StatSettingDef</patchName>
+        <arguments>
+            <li>Stat settings</li>
+            <li>Temperature</li>
+            <li>EMR_keyComfyTemperatureMultiplier</li>
+            <li>Multiplier</li>
+            <li>Temperature offset is multiplied by this.</li>
+            <li>26</li>
+            <li>0</li>
+            <li>1000</li>
+        </arguments>
+    </Operation>
+    
+    <!-- social impact -->
+    <Operation Class="XmlExtensions.ApplyPatch">
+        <patchName>EMR_StatSettingGroupDef</patchName>
+        <arguments>
+            <li>Stat settings</li>
+            <li>Social impact</li>
+            <li>SocialImpact = (BeautyFactor ^ {EMR_keySocialImpactFactorPower}) + (BeautyOffset / {EMR_keySocialImpactOffsetMultiplier}). \nSet all values to 0 if you don't want custom social impact.</li>
+            <li>EMR_keySocialImpactFactorPower</li>
+            <li>EMR_keySocialImpactOffsetMultiplier</li>
+            <li>EMR_keySocialImpactMin</li>
+        </arguments>
+    </Operation>
+    <Operation Class="XmlExtensions.ApplyPatch">
+        <patchName>EMR_StatSettingDef</patchName>
+        <arguments>
+            <li>Stat settings</li>
+            <li>Social impact</li>
+            <li>EMR_keySocialImpactFactorPower</li>
+            <li>Factor power</li>
+            <li>Higher = BeautyFactor will have stronger effect on Social Impact.</li>
+            <li>0.3</li>
+            <li>0</li>
+            <li>10</li>
+        </arguments>
+    </Operation>
+    <Operation Class="XmlExtensions.ApplyPatch">
+        <patchName>EMR_StatSettingDef</patchName>
+        <arguments>
+            <li>Stat settings</li>
+            <li>Social impact</li>
+            <li>EMR_keySocialImpactOffsetMultiplier</li>
+            <li>Offset multiplier</li>
+            <li>Higher = BeautyOffset will be multiplied by this.</li>
+            <li>0.01</li>
+            <li>0</li>
+            <li>10</li>
+        </arguments>
+    </Operation>
+    <Operation Class="XmlExtensions.ApplyPatch">
+        <patchName>EMR_StatSettingDef</patchName>
+        <arguments>
+            <li>Stat settings</li>
+            <li>Social impact</li>
+            <li>EMR_keySocialImpactMin</li>
+            <li>Minimum</li>
+            <li>Social impact will never be lower than this.</li>
+            <li>0.5</li>
+            <li>0</li>
+            <li>10</li>
+        </arguments>
+    </Operation>
+    
+    
+    
+    
+    <!-- various stats -->
+    <Operation Class="XmlExtensions.ApplyPatch">
+        <patchName>EMR_StatSettingGroupDef</patchName>
+        <arguments>
+            <li>Stat settings</li>
+            <li>Other stats</li>
+            <li>Stats that do not depend on the material - all material races will have those stats.\n By default vanilla human stats are used.</li>
+            <li></li>
+            <li></li>
+            <li></li>
+        </arguments>
+    </Operation>
+    <Operation Class="XmlExtensions.ApplyPatch">
+        <patchName>EMR_StatSettingDef</patchName>
+        <arguments>
+            <li>Stat settings</li>
+            <li>Other stats</li>
+            <li>EMR_keyBaseBodySize</li>
+            <li>Body size</li>
+            <li>Body size affects carrying capacity and how easy it is to hit the pawn.</li>
+            <li>1</li>
+            <li>0</li>
+            <li>10</li>
+        </arguments>
+    </Operation>
+    <Operation Class="XmlExtensions.ApplyPatch">
+        <patchName>EMR_StatSettingDef</patchName>
+        <arguments>
+            <li>Stat settings</li>
+            <li>Other stats</li>
+            <li>EMR_keyLeatherAmount</li>
+            <li>Leather amount</li>
+            <li>How much human leather you get upon butchering the pawn.</li>
+            <li>75</li>
+            <li>0</li>
+            <li>10000</li>
+        </arguments>
+    </Operation>
+    <Operation Class="XmlExtensions.ApplyPatch">
+        <patchName>EMR_StatSettingDef</patchName>
+        <arguments>
+            <li>Stat settings</li>
+            <li>Other stats</li>
+            <li>EMR_keylifeExpectancy</li>
+            <li>Life expectancy</li>
+            <li></li>
+            <li>80</li>
+            <li>0</li>
+            <li>10000</li>
+        </arguments>
+    </Operation>
+    <Operation Class="XmlExtensions.ApplyPatch">
+        <patchName>EMR_StatSettingDef</patchName>
+        <arguments>
+            <li>Stat settings</li>
+            <li>Other stats</li>
+            <li>EMR_keyButcherMaterialAmount</li>
+            <li>Butchering material amount</li>
+            <li>When you butcher a pawn, you will get this amount of the material that pawn was made of.</li>
+            <li>50</li>
+            <li>0</li>
+            <li>10000</li>
+        </arguments>
+    </Operation>
+    
+    <!-- tweaks -->
+    <Operation Class="XmlExtensions.ApplyPatch">
+        <patchName>EMR_StatSettingGroupDef</patchName>
+        <arguments>
+            <li>Stat settings</li>
+            <li>Tweaks</li>
+            <li>Stats that apply only to some materials.</li>
+            <li></li>
+            <li></li>
+            <li></li>
+        </arguments>
+    </Operation>
+    <Operation Class="XmlExtensions.ApplyPatch">
+        <patchName>EMR_StatSettingDef</patchName>
+        <arguments>
+            <li>Stat settings</li>
+            <li>Tweaks</li>
+            <li>EMR_keyStonyMaxHitPointsArmorMultiplier</li>
+            <li>HP to armor multiplier</li>
+            <li>Some materials, most notably stones, don't have StuffPower_Armor values, so to calculate race armor, material HP is used instead.</li>
+            <li>0.4</li>
+            <li>0</li>
+            <li>10000</li>
+        </arguments>
+    </Operation>
+    <Operation Class="XmlExtensions.ApplyPatch">
+        <patchName>EMR_StatSettingDef</patchName>
+        <arguments>
+            <li>Stat settings</li>
+            <li>Tweaks</li>
+            <li>EMR_keyStonyMaxHitPointsArmorOffset</li>
+            <li>HP to armor offset</li>
+            <li></li>
+            <li>-0.15</li>
+            <li>-100</li>
+            <li>1000</li>
+        </arguments>
+    </Operation>
+    <Operation Class="XmlExtensions.ApplyPatch">
+        <patchName>EMR_StatSettingDef</patchName>
+        <arguments>
+            <li>Stat settings</li>
+            <li>Tweaks</li>
+            <li>EMR_keySmallVolumeMultiplier</li>
+            <li>Small volume market value multiplier</li>
+            <li>Small volume materials (e.g. gold) have 10 times lesser market value, so to calculate pawn value, a multiplier is applied.</li>
+            <li>10</li>
+            <li>0</li>
+            <li>10000</li>
+        </arguments>
+    </Operation>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <!-- spawn settings -->
+    <!--
+    <Operation Class="XmlExtensions.ApplyPatch">
+    <patchName>EMR_StatSettingGroupDef</patchName>
+    <arguments>
+    <li>Spawn settings</li>
+    <li>Factions</li>
+    <li>Create single factions for all material races. \nEach race will have commonality calculated as: \n∑[all commonalities] / 0.35 * [material commonality] * multiplier.</li>
+    <li></li>
+    <li></li>
+    <li></li>
+    </arguments>
+    </Operation>
+    <Operation Class="XmlExtensions.ApplyPatch">
+    <patchName>EMR_ToggleableStatSettingDef</patchName>
+    <arguments>
+    <li>Spawn settings</li>
+    <li>Factions</li>
+    <li>EMR_CFOutlander</li>
+    <li>Outlander</li>
+    <li></li>
+    <li>true</li>
+    </arguments>
+    </Operation>
+    -->
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <Operation Class="XmlExtensions.ApplyPatch">
+        <patchName>EMR_StatSettingGroupDef</patchName>
+        <arguments>
+            <li>Spawn settings</li>
+            <li>Pawnkind Race Diversification</li>
+            <li>Requires you to install Pawnkind Race Diversification mod. \nEach race will have commonality calculated as: \n∑[all commonalities] / 0.35 * [material commonality] * multiplier.</li>
+            <li></li>
+            <li></li>
+            <li></li>
+        </arguments>
+    </Operation>
+    <Operation Class="XmlExtensions.ApplyPatch">
+        <patchName>EMR_ToggleableStatSettingDef</patchName>
+        <arguments>
+            <li>Spawn settings</li>
+            <li>Pawnkind Race Diversification</li>
+            <li>EMR_UsePRD</li>
+            <li>Use Pawnkind Race Diversification</li>
+            <li>Sets default PRD settings. \nIf this is disabled, you can still manually customize spawning chances in Pawnkind Race Diversification mod settings.</li>
+            <li>0.25</li>
+        </arguments>
+    </Operation>
+    <Operation Class="XmlExtensions.ApplyPatch">
+        <patchName>EMR_StatSettingDef</patchName>
+        <arguments>
+            <li>Spawn settings</li>
+            <li>Pawnkind Race Diversification</li>
+            <li>EMR_DefaultRarityMultiplier</li>
+            <li>Race commonality</li>
+            <li>If this value = 1, 50% of human pawns will be turned into material pawns.</li>
+            <li>0.25</li>
+            <li>0</li>
+            <li>10</li>
+        </arguments>
+    </Operation>
+    
+    
+    
+    <Operation Class="XmlExtensions.ApplyPatch">
+        <patchName>EMR_StatSettingGroupDef</patchName>
+        <arguments>
+            <li>Bonus settings</li>
+            <li>Building races</li>
+            <li>Generates races from all vanilla and modded buildings....</li>
+            <li></li>
+            <li></li>
+            <li></li>
+        </arguments>
+    </Operation>
+    <Operation Class="XmlExtensions.ApplyPatch">
+        <patchName>EMR_ToggleableStatSettingDef</patchName>
+        <arguments>
+            <li>Bonus settings</li>
+            <li>Building races</li>
+            <li>EMR_BuildingRaces</li>
+            <li>Enable</li>
+            <li>Generates races from all buildings. Loading time can reach up to 10 minutes on extremely heavily modded games and HDD!</li>
+            <li>false</li>
+        </arguments>
+    </Operation>
+    <Operation Class="XmlExtensions.ApplyPatch">
+        <patchName>EMR_ToggleableStatSettingDef</patchName>
+        <arguments>
+            <li>Bonus settings</li>
+            <li>Building races</li>
+            <li>EMR_UsePRDb</li>
+            <li>Use Pawnkind Race Diversification</li>
+            <li>races won't spawn without this! (unless you manually modify them in pawnkind race settings)</li>
+            <li>false</li>
+        </arguments>
+    </Operation>
+    <Operation Class="XmlExtensions.ApplyPatch">
+        <patchName>EMR_StatSettingDef</patchName>
+        <arguments>
+            <li>Bonus settings</li>
+            <li>Building races</li>
+            <li>EMR_DefaultRarityMultiplierB</li>
+            <li>Race commonality</li>
+            <li>If this value = 1, 50% of human pawns will be turned into building pawns.</li>
+            <li>1</li>
+            <li>0</li>
+            <li>100</li>
+        </arguments>
+    </Operation>
+</Patch>

@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Patch>
+    <Operation Class="XmlExtensions.OptionalPatch">
+        <modId>carnap2.EMR</modId>
+        <key>EMR_UsePRD</key>
+        <defaultValue>true</defaultValue>
+        <caseTrue>
+            
+            <Operation Class="XmlExtensions.UseSetting">
+                <modId>carnap2.EMR</modId>
+                <key>EMR_DefaultRarityMultiplier</key>
+                <defaultValue>0.25</defaultValue>
+                <apply>
+                    <Operation Class="XmlExtensions.CreateDocument">
+                        <docName>EMRRaces</docName>
+                        <xpath>Defs/AlienRace.ThingDef_AlienRace/defName[contains(text(), "zzEMR_")]/..</xpath>
+                    </Operation>
+                    <Operation Class="XmlExtensions.AggregateValues">
+                        <valueOperations>
+                            <Operation Class="XmlExtensions.CumulativeMath">
+                                <xmlDoc>EMRRaces</xmlDoc>
+                                <xpath>EMRRaces/AlienRace.ThingDef_AlienRace/modExtensions/li/flatGenerationWeight</xpath>
+                                <storeIn>EMRCount</storeIn>
+                                <operation>+</operation>
+                            </Operation>
+                            <Operation Class="XmlExtensions.CreateVariable">
+                                <value>0.35</value>
+                                <value2>{EMRCount}</value2>
+                                <operation>/</operation>
+                                <storeIn>multiplierA</storeIn>
+                            </Operation>
+                            <Operation Class="XmlExtensions.CreateVariable">
+                                <value>{EMR_DefaultRarityMultiplier}</value>
+                                <value2>{multiplierA}</value2>
+                                <operation>*</operation>
+                                <storeIn>multiplier</storeIn>
+                            </Operation>
+                        </valueOperations>
+                        <apply>
+                            <Operation Class="XmlExtensions.PatchOperationMath">
+                                <xmlDoc>EMRRaces</xmlDoc>
+                                <xpath>EMRRaces/AlienRace.ThingDef_AlienRace/modExtensions/li/flatGenerationWeight</xpath>
+                                <value>{multiplier}</value>
+                                <operation>*</operation>
+                            </Operation>
+                        </apply>
+                    </Operation>
+                    
+                    <Operation Class="XmlExtensions.MergeDocument">
+                        <docName>EMRRaces</docName>
+                    </Operation>
+                </apply>
+            </Operation>
+        </caseTrue>
+    </Operation>
+    
+    
+    <Operation Class="XmlExtensions.OptionalPatch">
+        <modId>carnap2.EMR</modId>
+        <key>EMR_UsePRDb</key>
+        <defaultValue>false</defaultValue>
+        <caseTrue>
+            
+            <Operation Class="XmlExtensions.UseSetting">
+                <modId>carnap2.EMR</modId>
+                <key>EMR_DefaultRarityMultiplierB</key>
+                <defaultValue>1</defaultValue>
+                <apply>
+                    <Operation Class="XmlExtensions.CreateDocument">
+                        <docName>EMRRacesB</docName>
+                        <xpath>Defs/AlienRace.ThingDef_AlienRace/defName[contains(text(), "zzbEMR_")]/..</xpath>
+                    </Operation>
+                    <Operation Class="XmlExtensions.AggregateValues">
+                        <valueOperations>
+                            <Operation Class="XmlExtensions.CumulativeMath">
+                                <xmlDoc>EMRRacesB</xmlDoc>
+                                <xpath>EMRRacesB/AlienRace.ThingDef_AlienRace/modExtensions/li/flatGenerationWeight</xpath>
+                                <storeIn>EMRCount</storeIn>
+                                <operation>count</operation>
+                            </Operation>
+                            <Operation Class="XmlExtensions.CreateVariable">
+                                <value>0.35</value>
+                                <value2>{EMRCount}</value2>
+                                <operation>/</operation>
+                                <storeIn>multiplierA</storeIn>
+                            </Operation>
+                            <Operation Class="XmlExtensions.CreateVariable">
+                                <value>{EMR_DefaultRarityMultiplierB}</value>
+                                <value2>{multiplierA}</value2>
+                                <operation>*</operation>
+                                <storeIn>multiplier</storeIn>
+                            </Operation>
+                        </valueOperations>
+                        <apply>
+                            <Operation Class="XmlExtensions.PatchOperationMath">
+                                <xmlDoc>EMRRacesB</xmlDoc>
+                                <xpath>EMRRacesB/AlienRace.ThingDef_AlienRace/modExtensions/li/flatGenerationWeight</xpath>
+                                <value>{multiplier}</value>
+                                <operation>*</operation>
+                            </Operation>
+                        </apply>
+                    </Operation>
+                    
+                    <Operation Class="XmlExtensions.MergeDocument">
+                        <docName>EMRRacesB</docName>
+                    </Operation>
+                </apply>
+            </Operation>
+        </caseTrue>
+    </Operation>
+</Patch>
