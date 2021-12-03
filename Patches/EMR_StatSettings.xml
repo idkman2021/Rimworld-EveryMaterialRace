@@ -535,7 +535,7 @@
         <arguments>
             <li>Spawn settings</li>
             <li>Pawnkind Race Diversification</li>
-            <li>Requires you to install Pawnkind Race Diversification mod. \nEach race will have commonality calculated as: \n∑[all commonalities] / 0.35 * [material commonality] * multiplier.</li>
+            <li>Races won't have any way to spawn without Pawnkind Race Diversification. \nEach race will have commonality calculated as: \n∑[all commonalities] / 0.35 * [material commonality] * multiplier.</li>
             <li></li>
             <li></li>
             <li></li>
@@ -573,7 +573,7 @@
         <arguments>
             <li>Bonus settings</li>
             <li>Building races</li>
-            <li>Generates races from all vanilla and modded buildings....</li>
+            <li>Generates races from all vanilla and modded buildings......</li>
             <li></li>
             <li></li>
             <li></li>
@@ -586,7 +586,7 @@
             <li>Building races</li>
             <li>EMR_BuildingRaces</li>
             <li>Enable</li>
-            <li>Generates races from all buildings. Loading time can reach up to 10 minutes on extremely heavily modded games and HDD!</li>
+            <li>this will double your loading time........</li>
             <li>false</li>
         </arguments>
     </Operation>
@@ -597,7 +597,7 @@
             <li>Building races</li>
             <li>EMR_UsePRDb</li>
             <li>Use Pawnkind Race Diversification</li>
-            <li>races won't spawn without this! (unless you manually modify them in pawnkind race settings)</li>
+            <li>Sets default PRD settings. \nIf this is disabled, you can still manually customize spawning chances in Pawnkind Race Diversification mod settings.</li>
             <li>false</li>
         </arguments>
     </Operation>
@@ -609,7 +609,7 @@
             <li>EMR_DefaultRarityMultiplierB</li>
             <li>Race commonality</li>
             <li>If this value = 1, 50% of human pawns will be turned into building pawns.</li>
-            <li>1</li>
+            <li>0.25</li>
             <li>0</li>
             <li>100</li>
         </arguments>
