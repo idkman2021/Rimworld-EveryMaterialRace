@@ -8,6 +8,8 @@ Creates a race from every material (customizeable).
 bonus setting - create a race from every building....
 
 ### Screenshots
+Screenshots with Expanded Materials - Metals, Expanded Materials - Plastics, Materials+, and Vanilla Textures Expanded mods installed. 
+![image](https://user-images.githubusercontent.com/76593873/148944090-ca08d787-174e-4664-8f45-5ccc014507b5.png)
 ![image](https://user-images.githubusercontent.com/76593873/148813723-810a578d-801a-472f-8d17-3d2302a867ba.png)
 ![image](https://user-images.githubusercontent.com/76593873/148813758-775b5043-3a47-4f12-b874-ead3919614b8.png)
 ![image](https://user-images.githubusercontent.com/76593873/148813799-d945fcd7-1b64-4ce0-bd6e-511d6cc8b533.png)
