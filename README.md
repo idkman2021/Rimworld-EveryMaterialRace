@@ -16,6 +16,6 @@ bonus setting - create a race from every building....
 ![image](https://user-images.githubusercontent.com/76593873/148813799-d945fcd7-1b64-4ce0-bd6e-511d6cc8b533.png)
 ![image](https://user-images.githubusercontent.com/76593873/148813836-9cc60098-f6f3-404e-818b-20485cd06cca.png)
 
-
+#### Mod settings with some mods
 ![image](https://user-images.githubusercontent.com/76593873/148814403-cdf282aa-5851-4616-8a33-aa9f76cf07f6.png)
 ![image](https://user-images.githubusercontent.com/76593873/148944486-8431fb41-e836-4f3e-ad2c-fac3d4edc669.png)
