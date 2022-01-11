@@ -623,6 +623,17 @@
                                                         </options>
                                                     </first>
                                                 </li>
+                                                 <li>
+                                                    <name>hair</name>
+                                                    <first Class="ColorGenerator_Options">
+                                                        <options>
+                                                            <li>
+                                                                <weight>10</weight>
+                                                                <only>{color}</only>
+                                                            </li>
+                                                        </options>
+                                                    </first>
+                                                </li>
                                             </colorChannels>
                                         </alienPartGenerator>
                                         
