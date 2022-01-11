@@ -2,6 +2,7 @@
 <ModMetaData>
   <name>Every Material Race</name>
   <author>test</author>
+  <url>https://github.com/idkman2021/Rimworld-EveryMaterialRace/releases/latest</url>
   <!--<url>https://github.com/idkman2021/Rimworld-TPatches/releases/latest</url>-->
   <packageId>carnap2.EMR</packageId>
   <supportedVersions>
