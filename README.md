@@ -1,3 +1,5 @@
+### THIS MOD CAN BREAK UI FOR UNKNOWN REASON AND RN I CAN'T BE BOTHERED TO FIND WHY AND FIX SORRY!!!
+
 Creates a race from every material (customizeable). 
 
 
