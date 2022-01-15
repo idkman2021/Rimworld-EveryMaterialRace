@@ -1,13 +1,7 @@
-### THIS MOD CAN BREAK UI FOR UNKNOWN REASON AND RN I CAN'T BE BOTHERED TO INVESTIGATE SORRY!!!
+Automatically creates a race from every vanilla and modded material (e.g. steel people, marble people, unobtanium people). Race stats are affected by material stats. All races are toggleable using settings menu. Made using XML Extensions.
+      
+Important! To avoid issues, load this mod as low as possible. Issues arise when this mod creates a race from a material, and a mod that is loaded after deletes that material. If your options menu is empty, put this mod lower in the loading order.
 
-Creates a race from every material (customizeable). 
-
-
-
-
-
-
-bonus setting - create a race from every building....
 
 ### Screenshots
 #### Some races with Expanded Materials - Metals and Materials+ installed. 
