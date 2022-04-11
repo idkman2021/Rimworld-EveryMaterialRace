@@ -1,5 +1,6 @@
-### WIP
 Automatically creates a race from every vanilla and modded material (e.g. steel people, marble people, unobtanium people). Race stats are affected by material stats. All races are toggleable using settings menu. Made using XML Extensions.
+
+bonus setting, off by default - doubles the amount of free time you have while rimworld is loading with a side effect of creating a race from every vanilla and modded building (WIP).
       
 Important! To avoid issues, load this mod as low as possible. Issues arise when this mod creates a race from a material, and a mod that is loaded after deletes that material. If your options menu is empty, put this mod lower in the loading order.
 
